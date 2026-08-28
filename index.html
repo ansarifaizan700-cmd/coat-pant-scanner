@@ -2,590 +2,508 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<meta charset="UTF-8">
+  <title>Coat Pant Inventory Scanner</title>
 
-<meta
-  name="viewport"
-  content="width=device-width, initial-scale=1.0">
+  <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
 
-<title>Coat Pant Inventory Scanner</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
 
-<script
-  src="https://unpkg.com/html5-qrcode"
-  type="text/javascript">
-</script>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f3f6fb;
+      color: #111827;
+    }
 
-<style>
+    .container {
+      width: 100%;
+      max-width: 600px;
+      margin: auto;
+      padding: 20px;
+    }
 
-* {
-  box-sizing: border-box;
-}
+    .card {
+      background: #ffffff;
+      padding: 22px;
+      border-radius: 18px;
+      box-shadow: 0 8px 30px rgba(0,0,0,.08);
+    }
 
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: #f4f7fb;
-  color: #111827;
-}
+    h1 {
+      text-align: center;
+      margin: 0 0 8px;
+      font-size: 27px;
+    }
 
-.container {
-  max-width: 600px;
-  margin: auto;
-  padding: 20px;
-}
+    .subtitle {
+      text-align: center;
+      color: #6b7280;
+      margin-bottom: 22px;
+    }
 
-.card {
-  background: white;
-  border-radius: 18px;
-  padding: 20px;
-  box-shadow: 0 8px 30px rgba(0,0,0,.08);
-}
+    .mode-buttons {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
 
-h1 {
-  text-align: center;
-  margin-top: 0;
-  font-size: 26px;
-}
+    .mode-buttons button {
+      flex: 1;
+    }
 
-.subtitle {
-  text-align: center;
-  color: #6b7280;
-  margin-bottom: 20px;
-}
+    button {
+      width: 100%;
+      border: 0;
+      border-radius: 10px;
+      padding: 13px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 10px;
+    }
 
+    .entry-btn {
+      background: #16a34a;
+      color: white;
+    }
 
-/* ================================
-   MODE
-================================ */
+    .exit-btn {
+      background: #dc2626;
+      color: white;
+    }
 
-.mode-title {
-  text-align: center;
-  font-size: 18px;
-  font-weight: bold;
-  margin: 20px 0 12px;
-}
+    .start-btn {
+      background: #2563eb;
+      color: white;
+    }
 
-.mode-buttons {
-  display: flex;
-  gap: 12px;
-}
+    .stop-btn {
+      background: #6b7280;
+      color: white;
+    }
 
-.mode-btn {
-  flex: 1;
-  border: none;
-  border-radius: 12px;
-  padding: 18px 10px;
-  font-size: 18px;
-  font-weight: bold;
-  cursor: pointer;
-}
+    .submit-btn {
+      background: #7c3aed;
+      color: white;
+    }
 
-.entry-btn {
-  background: #16a34a;
-  color: white;
-}
+    .hidden {
+      display: none !important;
+    }
 
-.exit-btn {
-  background: #dc2626;
-  color: white;
-}
+    #reader {
+      width: 100%;
+      overflow: hidden;
+      border-radius: 15px;
+      margin-top: 15px;
+    }
 
+    #status {
+      text-align: center;
+      font-weight: bold;
+      margin: 15px 0;
+    }
 
-/* ================================
-   SCANNER
-================================ */
+    .scan-list {
+      margin-top: 18px;
+    }
 
-#scannerArea {
-  display: none;
-}
+    .barcode-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #f8fafc;
+      border: 1px solid #e5e7eb;
+      padding: 10px 12px;
+      border-radius: 9px;
+      margin-top: 8px;
+    }
 
-#reader {
-  width: 100%;
-  overflow: hidden;
-  border-radius: 15px;
-  margin-top: 15px;
-}
+    .barcode-text {
+      font-weight: bold;
+      word-break: break-all;
+    }
 
-#stopBtn {
-  background: #dc2626;
-  color: white;
-}
+    .remove-btn {
+      width: 38px;
+      min-width: 38px;
+      padding: 8px;
+      margin: 0 0 0 10px;
+      background: #fee2e2;
+      color: #dc2626;
+      font-size: 20px;
+    }
 
+    .count {
+      margin-top: 15px;
+      padding: 12px;
+      background: #eff6ff;
+      border-radius: 10px;
+      text-align: center;
+      font-weight: bold;
+    }
 
-/* ================================
-   STATUS
-================================ */
+    .form-box {
+      margin-top: 20px;
+      padding: 18px;
+      background: #f8fafc;
+      border-radius: 14px;
+    }
 
-#status {
-  text-align: center;
-  margin-top: 15px;
-  font-weight: bold;
-}
+    .form-box h3 {
+      margin-top: 0;
+    }
 
+    label {
+      display: block;
+      margin-top: 12px;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
 
-/* ================================
-   RESULT
-================================ */
+    input,
+    select {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #d1d5db;
+      border-radius: 9px;
+      font-size: 16px;
+      background: white;
+    }
 
-.result {
-  margin-top: 20px;
-  padding: 18px;
-  border-radius: 14px;
-  background: #f8fafc;
-  display: none;
-}
+    .message {
+      margin-top: 18px;
+      padding: 15px;
+      border-radius: 12px;
+      text-align: center;
+      font-weight: bold;
+    }
 
-.success {
-  border-left: 5px solid #16a34a;
-}
+    .success {
+      background: #dcfce7;
+      color: #166534;
+    }
 
-.error {
-  border-left: 5px solid #dc2626;
-}
+    .error {
+      background: #fee2e2;
+      color: #991b1b;
+    }
 
-.warning {
-  border-left: 5px solid #f59e0b;
-}
+    .warning {
+      background: #fef3c7;
+      color: #92400e;
+    }
 
-.new {
-  border-left: 5px solid #2563eb;
-}
+    .product-box {
+      margin-top: 15px;
+      padding: 15px;
+      background: #f8fafc;
+      border-radius: 12px;
+      border-left: 5px solid #2563eb;
+    }
 
-.row {
-  padding: 8px 0;
-  border-bottom: 1px solid #e5e7eb;
-}
+    .product-row {
+      padding: 6px 0;
+      border-bottom: 1px solid #e5e7eb;
+    }
 
-.row:last-child {
-  border-bottom: none;
-}
+    .product-row:last-child {
+      border-bottom: 0;
+    }
 
-.label {
-  font-weight: bold;
-  color: #374151;
-}
+    .reset-btn {
+      background: #111827;
+      color: white;
+      margin-top: 15px;
+    }
 
-
-/* ================================
-   PRODUCT FORM
-================================ */
-
-#productForm {
-  display: none;
-  margin-top: 20px;
-  padding: 18px;
-  border-radius: 14px;
-  background: #f8fafc;
-  border: 1px solid #e5e7eb;
-}
-
-#productForm h2 {
-  margin-top: 0;
-}
-
-.form-label {
-  display: block;
-  margin-top: 12px;
-  margin-bottom: 5px;
-  font-weight: bold;
-}
-
-.form-input {
-  width: 100%;
-  padding: 12px;
-  border: 1px solid #d1d5db;
-  border-radius: 8px;
-  font-size: 16px;
-}
-
-.barcode-count {
-  text-align: center;
-  font-size: 20px;
-  font-weight: bold;
-  margin: 12px 0;
-}
-
-.barcode-list {
-  background: white;
-  border: 1px solid #e5e7eb;
-  border-radius: 10px;
-  padding: 10px;
-  max-height: 250px;
-  overflow-y: auto;
-}
-
-.barcode-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-
-  padding: 9px;
-  margin-bottom: 6px;
-
-  background: #f3f4f6;
-  border-radius: 7px;
-}
-
-.barcode-number {
-  flex: 1;
-  word-break: break-all;
-  font-weight: bold;
-}
-
-.remove-barcode-btn {
-  width: 42px !important;
-  min-width: 42px;
-  margin: 0 !important;
-  padding: 8px !important;
-  background: #dc2626 !important;
-  color: white;
-  border-radius: 8px !important;
-}
-
-
-/* ================================
-   BUTTONS
-================================ */
-
-button {
-  width: 100%;
-  border: none;
-  border-radius: 10px;
-  padding: 14px;
-  margin-top: 12px;
-  font-size: 16px;
-  font-weight: bold;
-  cursor: pointer;
-}
-
-button:disabled {
-  opacity: .6;
-  cursor: not-allowed;
-}
-
-#saveBtn {
-  background: #7c3aed;
-  color: white;
-}
-
-
-/* ================================
-   THANK YOU
-================================ */
-
-#thankYou {
-  display: none;
-  text-align: center;
-  padding: 30px 10px;
-}
-
-.thank-icon {
-  font-size: 60px;
-}
-
-.thank-title {
-  font-size: 25px;
-  font-weight: bold;
-  margin: 15px 0;
-}
-
-.thank-text {
-  color: #6b7280;
-  line-height: 1.6;
-}
-
-#newScanBtn {
-  background: #2563eb;
-  color: white;
-}
-
-</style>
-
+    .info {
+      margin-top: 15px;
+      padding: 12px;
+      background: #f1f5f9;
+      border-radius: 10px;
+      font-size: 14px;
+      color: #475569;
+    }
+  </style>
 </head>
-
 
 <body>
 
 <div class="container">
 
-<div class="card">
+  <div class="card">
 
-<h1>📦 Coat Pant Inventory</h1>
+    <h1>📦 Coat Pant Inventory</h1>
 
-<div class="subtitle">
-Barcode Inventory Management
-</div>
+    <div class="subtitle">
+      Barcode Entry & Exit System
+    </div>
 
 
-<!-- =================================
-     MODE SELECTION
-================================= -->
+    <!-- ================================
+         MODE SELECTION
+    ================================= -->
 
-<div id="modeSelection">
+    <div id="modeSection">
 
-  <div class="mode-title">
-    Select Action
-  </div>
+      <div class="mode-buttons">
 
-  <div class="mode-buttons">
+        <button
+          class="entry-btn"
+          onclick="selectMode('ENTRY')">
+          🟢 ENTRY
+        </button>
+
+        <button
+          class="exit-btn"
+          onclick="selectMode('EXIT')">
+          🔴 EXIT
+        </button>
+
+      </div>
+
+      <div class="info">
+        <b>ENTRY:</b> New products ko Products sheet mein add karega.<br><br>
+
+        <b>EXIT:</b> Products sheet se product remove karega aur
+        Scan Log mein EXIT record karega.
+      </div>
+
+    </div>
+
+
+    <!-- ================================
+         SCANNER SECTION
+    ================================= -->
+
+    <div id="scannerSection" class="hidden">
+
+      <h3 id="modeTitle"></h3>
+
+      <div id="reader"></div>
+
+      <button
+        id="stopBtn"
+        class="stop-btn"
+        onclick="stopScanner()">
+        ⛔ Stop Camera
+      </button>
+
+      <div id="status">
+        Camera start ho rahi hai...
+      </div>
+
+    </div>
+
+
+    <!-- ================================
+         ENTRY BARCODE LIST
+    ================================= -->
+
+    <div
+      id="entryListSection"
+      class="scan-list hidden">
+
+      <h3>📋 Scanned Barcodes</h3>
+
+      <div id="barcodeList"></div>
+
+      <div
+        id="barcodeCount"
+        class="count">
+        0 Barcode
+      </div>
+
+      <button
+        id="openFormBtn"
+        class="submit-btn"
+        onclick="showEntryForm()">
+        📝 Product Details Fill Karein
+      </button>
+
+    </div>
+
+
+    <!-- ================================
+         ENTRY FORM
+    ================================= -->
+
+    <div
+      id="formSection"
+      class="form-box hidden">
+
+      <h3>📝 Product Details</h3>
+
+      <p>
+        <b id="formBarcodeCount">0</b>
+        barcode ke liye ye details ek baar fill karein.
+      </p>
+
+      <label>Design Code</label>
+
+      <input
+        id="designCode"
+        type="text"
+        placeholder="Example: CP101">
+
+
+      <label>Design Name</label>
+
+      <input
+        id="designName"
+        type="text"
+        placeholder="Example: Premium Coat">
+
+
+      <label>Size</label>
+
+      <input
+        id="size"
+        type="text"
+        placeholder="Example: 40 / L">
+
+
+      <label>Color</label>
+
+      <input
+        id="color"
+        type="text"
+        placeholder="Example: Black">
+
+
+      <label>Type</label>
+
+      <input
+        id="type"
+        type="text"
+        placeholder="Example: Coat">
+
+
+      <label>MRP</label>
+
+      <input
+        id="mrp"
+        type="number"
+        placeholder="Example: 4999">
+
+
+      <button
+        class="submit-btn"
+        id="submitBtn"
+        onclick="submitEntry()">
+        ✅ Submit Entry
+      </button>
+
+    </div>
+
+
+    <!-- ================================
+         EXIT RESULT
+    ================================= -->
+
+    <div
+      id="exitResult"
+      class="hidden">
+    </div>
+
+
+    <!-- ================================
+         FINAL MESSAGE
+    ================================= -->
+
+    <div
+      id="finalMessage"
+      class="hidden">
+    </div>
+
 
     <button
-      class="mode-btn entry-btn"
-      onclick="selectMode('ENTRY')">
-
-      🟢 ENTRY
-
-    </button>
-
-    <button
-      class="mode-btn exit-btn"
-      onclick="selectMode('EXIT')">
-
-      🔴 EXIT
-
+      id="resetBtn"
+      class="reset-btn hidden"
+      onclick="resetSystem()">
+      🔄 New Entry / Exit
     </button>
 
   </div>
-
-</div>
-
-
-<!-- =================================
-     SCANNER
-================================= -->
-
-<div id="scannerArea">
-
-  <div id="reader"></div>
-
-  <button
-    id="stopBtn"
-    onclick="stopScanner()">
-
-    ⛔ Stop Camera
-
-  </button>
-
-</div>
-
-
-<div id="status"></div>
-
-
-<!-- =================================
-     RESULT
-================================= -->
-
-<div
-  id="result"
-  class="result">
-</div>
-
-
-<!-- =================================
-     ENTRY FORM
-================================= -->
-
-<div id="productForm">
-
-  <h2>➕ Product Details</h2>
-
-  <p>
-    Same product ke multiple barcodes
-    scan karein. Details sirf ek baar
-    bharni hain.
-  </p>
-
-
-  <div class="barcode-count">
-
-    📦
-    <span id="barcodeCount">0</span>
-    Barcodes
-
-  </div>
-
-
-  <div
-    id="barcodeList"
-    class="barcode-list">
-  </div>
-
-
-  <label class="form-label">
-    Design Code
-  </label>
-
-  <input
-    id="designCode"
-    class="form-input"
-    type="text"
-    placeholder="Example: C101">
-
-
-  <label class="form-label">
-    Design Name
-  </label>
-
-  <input
-    id="designName"
-    class="form-input"
-    type="text"
-    placeholder="Example: Royal Coat">
-
-
-  <label class="form-label">
-    Size
-  </label>
-
-  <input
-    id="size"
-    class="form-input"
-    type="text"
-    placeholder="Example: 40">
-
-
-  <label class="form-label">
-    Color
-  </label>
-
-  <input
-    id="color"
-    class="form-input"
-    type="text"
-    placeholder="Example: Black">
-
-
-  <label class="form-label">
-    Type
-  </label>
-
-  <input
-    id="type"
-    class="form-input"
-    type="text"
-    placeholder="Example: Coat">
-
-
-  <label class="form-label">
-    MRP
-  </label>
-
-  <input
-    id="mrp"
-    class="form-input"
-    type="number"
-    placeholder="Example: 5000">
-
-
-  <button
-    id="saveBtn"
-    onclick="saveEntry()">
-
-    💾 SAVE ENTRY
-
-  </button>
-
-</div>
-
-
-<!-- =================================
-     THANK YOU
-================================= -->
-
-<div id="thankYou">
-
-  <div class="thank-icon">
-    ✅
-  </div>
-
-  <div class="thank-title">
-    Thank You!
-  </div>
-
-  <div
-    id="thankText"
-    class="thank-text">
-
-    Successfully completed.
-
-  </div>
-
-
-  <button
-    id="newScanBtn"
-    onclick="newScan()">
-
-    📷 New Scan
-
-  </button>
-
-</div>
-
-
-</div>
 
 </div>
 
 
 <script>
 
-
-/* =================================
-   GOOGLE APPS SCRIPT URL
-================================= */
+/* =================================================
+   GOOGLE APPS SCRIPT API
+================================================= */
 
 const API_URL =
 "https://script.google.com/macros/s/AKfycbxF4O0CVmLIW9xsPkLw133SfQvz2yGjxETbTyaoANKSVvloPZtuPKbDTbiy-1zTO58PcQ/exec";
 
 
-/* =================================
+/* =================================================
    VARIABLES
-================================= */
+================================================= */
 
 let scanner = null;
 
+let currentMode = "";
+
 let scanning = false;
 
-let mode = "";
+let scannedBarcodes = [];
 
-let checking = false;
+let processingBarcode = false;
 
 let lastBarcode = "";
 
 let lastScanTime = 0;
 
-let newBarcodes = [];
 
+/* =================================================
+   SELECT ENTRY / EXIT
+================================================= */
 
-/* =================================
-   SELECT MODE
-================================= */
+function selectMode(mode) {
 
-function selectMode(selectedMode) {
+  currentMode = mode;
 
-  mode = selectedMode;
+  scannedBarcodes = [];
 
-  document
-    .getElementById("modeSelection")
-    .style.display = "none";
+  processingBarcode = false;
 
-  document
-    .getElementById("scannerArea")
-    .style.display = "block";
-
+  lastBarcode = "";
 
   document
-    .getElementById("status")
+    .getElementById("modeSection")
+    .classList.add("hidden");
+
+
+  document
+    .getElementById("scannerSection")
+    .classList.remove("hidden");
+
+
+  document
+    .getElementById("modeTitle")
     .innerText =
+      mode === "ENTRY"
+      ? "🟢 ENTRY MODE"
+      : "🔴 EXIT MODE";
 
-      selectedMode === "ENTRY"
 
-        ? "🟢 ENTRY Mode — Camera start ho raha hai..."
+  if (mode === "ENTRY") {
 
-        : "🔴 EXIT Mode — Camera start ho raha hai...";
+    document
+      .getElementById("entryListSection")
+      .classList.remove("hidden");
+
+  }
 
 
   startScanner();
@@ -593,11 +511,11 @@ function selectMode(selectedMode) {
 }
 
 
-/* =================================
+/* =================================================
    START SCANNER
-================================= */
+================================================= */
 
-function startScanner() {
+async function startScanner() {
 
   if (scanning) return;
 
@@ -611,60 +529,62 @@ function startScanner() {
     fps: 10,
 
     qrbox: {
-      width: 280,
-      height: 140
+
+      width: 300,
+
+      height: 150
+
     }
 
   };
 
 
-  scanner.start(
+  try {
 
-    {
-      facingMode: "environment"
-    },
+    await scanner.start(
 
-    config,
+      {
+        facingMode: "environment"
+      },
 
-    onScanSuccess,
+      config,
 
-    onScanFailure
+      onScanSuccess,
 
-  )
+      onScanFailure
 
-  .then(function() {
+    );
+
 
     scanning = true;
+
 
     document
       .getElementById("status")
       .innerText =
+        "📷 Camera ready — barcode scan karein";
 
-        mode === "ENTRY"
 
-          ? "🟢 ENTRY — Barcode scan karein"
+  }
 
-          : "🔴 EXIT — Barcode scan karein";
-
-  })
-
-  .catch(function(error) {
+  catch (error) {
 
     console.error(error);
+
 
     document
       .getElementById("status")
       .innerText =
         "❌ Camera start nahi ho paya. Permission check karein.";
 
-  });
+  }
 
 }
 
 
-/* =================================
-   SCAN SUCCESS
-================================= */
+/* =================================================
+   BARCODE SUCCESS
+================================================= */
 
 function onScanSuccess(decodedText) {
 
@@ -680,15 +600,15 @@ function onScanSuccess(decodedText) {
 
 
   /*
-   * Same barcode ko camera ke
-   * continuous scanning se rokna
+   * Camera ek barcode ko
+   * multiple times detect karta hai.
    */
 
   if (
 
     barcode === lastBarcode &&
 
-    now - lastScanTime < 2500
+    now - lastScanTime < 3000
 
   ) {
 
@@ -697,93 +617,63 @@ function onScanSuccess(decodedText) {
   }
 
 
-  lastBarcode =
-    barcode;
+  lastBarcode = barcode;
 
-  lastScanTime =
-    now;
+  lastScanTime = now;
 
 
-  if (checking) return;
-
-
-  /*
-   * ENTRY:
-   * Current batch mein duplicate
-   */
-
-  if (
-
-    mode === "ENTRY" &&
-
-    newBarcodes.includes(barcode)
-
-  ) {
-
-    showResult(
-
-      "warning",
-
-      "⚠️ Duplicate Barcode",
-
-      `<p>
-        Barcode
-        <strong>
-          ${escapeHtml(barcode)}
-        </strong>
-        already scan ho chuka hai.
-      </p>
-
-      <p>
-        Ye barcode dobara add nahi hoga.
-      </p>`
-
-    );
-
-
-    document
-      .getElementById("status")
-      .innerText =
-        "⚠️ Duplicate barcode — add nahi hua";
-
+  if (processingBarcode) {
 
     return;
 
   }
 
 
-  checking = true;
+  processingBarcode = true;
 
 
-  document
-    .getElementById("status")
-    .innerText =
-      "🔍 Barcode checking...";
+  if (currentMode === "ENTRY") {
 
+    checkEntryBarcode(barcode);
 
-  checkBarcode(barcode);
+  }
+
+  else if (currentMode === "EXIT") {
+
+    processExitBarcode(barcode);
+
+  }
 
 }
 
 
-/* =================================
-   CHECK BARCODE
-================================= */
+/* =================================================
+   SCAN FAILURE
+================================================= */
 
-async function checkBarcode(barcode) {
+function onScanFailure(error) {
+
+  // Continuous scanner errors ignore
+}
+
+
+/* =================================================
+   ENTRY BARCODE CHECK
+================================================= */
+
+async function checkEntryBarcode(barcode) {
+
+  setStatus(
+    "🔍 Barcode check ho raha hai..."
+  );
+
 
   try {
 
-
     const url =
-
       API_URL +
-
       "?action=check" +
-
-      "&mode=" +
-      encodeURIComponent(mode) +
-
+      "&mode=ENTRY" +
       "&barcode=" +
       encodeURIComponent(barcode);
 
@@ -799,345 +689,85 @@ async function checkBarcode(barcode) {
     console.log(data);
 
 
-    /* =================================
-       ENTRY - NEW
-    ================================= */
-
     if (
-
-      mode === "ENTRY" &&
-
-      data.status === "NEW_BARCODE"
-
+      data.status ===
+      "NEW_BARCODE"
     ) {
 
 
+      /*
+       * Check local list also
+       */
+
       if (
-
-        !newBarcodes.includes(
-          data.barcode
+        scannedBarcodes.includes(
+          barcode
         )
-
       ) {
 
-        newBarcodes.push(
-          data.barcode
+        showTemporaryMessage(
+          "⚠️ Duplicate Barcode",
+          barcode +
+          " already scan kiya hua hai.",
+          "warning"
         );
 
       }
 
+      else {
 
-      updateBarcodeList();
-
-
-      document
-        .getElementById("productForm")
-        .style.display =
-          "block";
+        scannedBarcodes.push(
+          barcode
+        );
 
 
-      showResult(
+        renderBarcodeList();
 
-        "new",
 
-        "🆕 New Barcode",
+        setStatus(
+          "✅ New barcode add ho gaya: " +
+          barcode
+        );
 
-        `<p>
-          Barcode list mein add ho gaya.
-        </p>
+      }
 
-        <p>
-          Ab aur barcode scan kar sakte hain.
-        </p>`
+    }
+
+
+    else if (
+      data.status ===
+      "ALREADY_REGISTERED"
+    ) {
+
+      showTemporaryMessage(
+
+        "⚠️ Duplicate / Already Registered",
+
+        "Barcode " +
+        barcode +
+        " Products sheet mein already hai. Dobara add nahi hoga.",
+
+        "warning"
 
       );
 
-
-      document
-        .getElementById("status")
-        .innerText =
-          "🟢 Aur barcode scan karein ya SAVE ENTRY karein";
-
-
-      return;
-
     }
 
-
-    /* =================================
-       ENTRY - ALREADY REGISTERED
-    ================================= */
-
-    if (
-
-      mode === "ENTRY" &&
-
-      data.status === "ALREADY_REGISTERED"
-
-    ) {
-
-
-      showResult(
-
-        "warning",
-
-        "⚠️ Already Registered",
-
-        `<div class="row">
-
-          <span class="label">
-            Barcode:
-          </span>
-
-          ${escapeHtml(data.barcode)}
-
-        </div>
-
-        <p>
-          Ye barcode Products sheet mein
-          already registered hai.
-        </p>
-
-        <p>
-          Dobara ENTRY nahi hogi.
-        </p>`
-
-      );
-
-
-      return;
-
-    }
-
-
-    /* =================================
-       EXIT - PRODUCT FOUND
-    ================================= */
-
-    if (
-
-      mode === "EXIT" &&
-
-      data.status === "EXIT_SUCCESS"
-
-    ) {
-
-
-      /*
-       * Ab actual EXIT process
-       */
-
-      await processExit(
-        barcode
-      );
-
-
-      return;
-
-    }
-
-
-    /* =================================
-       EXIT - NOT FOUND
-    ================================= */
-
-    if (
-
-      mode === "EXIT" &&
-
-      data.status === "NOT_FOUND"
-
-    ) {
-
-
-      showResult(
-
-        "error",
-
-        "❌ Product Not Found",
-
-        `<p>
-          ${escapeHtml(
-            data.message
-          )}
-        </p>`
-
-      );
-
-
-      document
-        .getElementById("status")
-        .innerText =
-          "❌ Product Products sheet mein nahi mila";
-
-
-      return;
-
-    }
-
-
-    /* =================================
-       GENERAL ERROR
-    ================================= */
-
-    showResult(
-
-      "error",
-
-      "❌ Error",
-
-      `<p>
-        ${escapeHtml(
-          data.message ||
-          "Something went wrong"
-        )}
-      </p>`
-
-    );
-
-
-  }
-
-  catch (error) {
-
-    console.error(error);
-
-
-    showResult(
-
-      "error",
-
-      "⚠️ Connection Error",
-
-      `<p>
-        Google Sheet se connection nahi ho paya.
-      </p>
-
-      <p>
-        Internet connection check karein.
-      </p>`
-
-    );
-
-  }
-
-  finally {
-
-    checking = false;
-
-  }
-
-}
-
-
-/* =================================
-   ACTUAL EXIT PROCESS
-================================= */
-
-async function processExit(barcode) {
-
-  try {
-
-
-    document
-      .getElementById("status")
-      .innerText =
-        "⏳ Product EXIT ho raha hai...";
-
-
-    const url =
-
-      API_URL +
-
-      "?action=processExit" +
-
-      "&barcode=" +
-
-      encodeURIComponent(barcode);
-
-
-    const response =
-      await fetch(url);
-
-
-    const data =
-      await response.json();
-
-
-    console.log(data);
-
-
-    if (
-      data.success &&
-      data.status === "EXIT_SUCCESS"
-    ) {
-
-
-      /*
-       * Camera stop
-       */
-
-      await stopScanner();
-
-
-      /*
-       * Thank You screen
-       */
-
-      document
-        .getElementById("result")
-        .style.display =
-          "none";
-
-
-      document
-        .getElementById("thankYou")
-        .style.display =
-          "block";
-
-
-      document
-        .getElementById("thankText")
-        .innerHTML =
-
-          "🔴 Product successfully OUT ho gaya.<br><br>" +
-
-          "<strong>Barcode:</strong> " +
-
-          escapeHtml(
-            data.barcode
-          ) +
-
-          "<br><br>" +
-
-          "<strong>Design:</strong> " +
-
-          escapeHtml(
-            data.designName
-          );
-
-    }
 
     else {
 
+      showTemporaryMessage(
 
-      showResult(
+        "❌ Error",
 
-        "warning",
+        data.message ||
+        "Barcode check nahi ho paya.",
 
-        "⚠️ EXIT nahi hua",
-
-        `<p>
-          ${escapeHtml(
-            data.message ||
-            "Product exit nahi ho paya."
-          )}
-        </p>`
+        "error"
 
       );
 
     }
-
 
   }
 
@@ -1146,45 +776,33 @@ async function processExit(barcode) {
     console.error(error);
 
 
-    showResult(
-
-      "error",
+    showTemporaryMessage(
 
       "⚠️ Connection Error",
 
-      `<p>
-        Product EXIT nahi ho paya.
-      </p>
+      "Google Sheet se connection nahi ho paya.",
 
-      <p>
-        Google Sheet connection check karein.
-      </p>`
+      "error"
 
     );
 
   }
 
-  finally {
 
-    checking = false;
+  setTimeout(function() {
 
-  }
+    processingBarcode = false;
+
+  }, 800);
 
 }
 
 
-/* =================================
-   UPDATE BARCODE LIST
-================================= */
+/* =================================================
+   RENDER BARCODE LIST
+================================================= */
 
-function updateBarcodeList() {
-
-
-  document
-    .getElementById("barcodeCount")
-    .innerText =
-      newBarcodes.length;
-
+function renderBarcodeList() {
 
   const list =
     document.getElementById(
@@ -1195,9 +813,8 @@ function updateBarcodeList() {
   list.innerHTML = "";
 
 
-  newBarcodes.forEach(
+  scannedBarcodes.forEach(
     function(barcode, index) {
-
 
       const div =
         document.createElement(
@@ -1209,78 +826,55 @@ function updateBarcodeList() {
         "barcode-item";
 
 
-      const text =
-        document.createElement(
-          "span"
-        );
+      div.innerHTML = `
 
+        <span class="barcode-text">
+          ${index + 1}. ${escapeHtml(barcode)}
+        </span>
 
-      text.className =
-        "barcode-number";
+        <button
+          class="remove-btn"
+          onclick="removeBarcode(${index})">
+          −
+        </button>
 
+      `;
 
-      text.innerText =
-
-        (index + 1) +
-        ". " +
-        barcode;
-
-
-      const removeBtn =
-        document.createElement(
-          "button"
-        );
-
-
-      removeBtn.type =
-        "button";
-
-
-      removeBtn.className =
-        "remove-barcode-btn";
-
-
-      removeBtn.innerText =
-        "➖";
-
-
-      removeBtn.title =
-        "Remove Barcode";
-
-
-      removeBtn.onclick =
-        function() {
-
-          removeBarcode(index);
-
-        };
-
-
-      div.appendChild(text);
-
-      div.appendChild(removeBtn);
 
       list.appendChild(div);
 
     }
   );
 
+
+  document
+    .getElementById("barcodeCount")
+    .innerText =
+      scannedBarcodes.length +
+      (
+        scannedBarcodes.length === 1
+        ? " Barcode"
+        : " Barcodes"
+      );
+
+
+  document
+    .getElementById("formBarcodeCount")
+    .innerText =
+      scannedBarcodes.length;
+
 }
 
 
-/* =================================
+/* =================================================
    REMOVE BARCODE
-================================= */
+================================================= */
 
 function removeBarcode(index) {
 
-
   if (
-
     index < 0 ||
-
-    index >= newBarcodes.length
-
+    index >= scannedBarcodes.length
   ) {
 
     return;
@@ -1288,75 +882,87 @@ function removeBarcode(index) {
   }
 
 
-  const removedBarcode =
-    newBarcodes[index];
+  const barcode =
+    scannedBarcodes[index];
 
 
-  newBarcodes.splice(
+  scannedBarcodes.splice(
     index,
     1
   );
 
 
-  updateBarcodeList();
+  renderBarcodeList();
 
 
-  if (
-    newBarcodes.length === 0
-  ) {
-
-    document
-      .getElementById("productForm")
-      .style.display =
-        "none";
-
-  }
-
-
-  showResult(
-
-    "warning",
-
-    "➖ Barcode Removed",
-
-    `<p>
-      Barcode
-      <strong>
-        ${escapeHtml(
-          removedBarcode
-        )}
-      </strong>
-      list se remove kar diya gaya.
-    </p>
-
-    <p>
-      Ise chahein to dobara scan kar sakte hain.
-    </p>`
-
+  setStatus(
+    "➖ Barcode remove kar diya: " +
+    barcode
   );
-
-
-  document
-    .getElementById("status")
-    .innerText =
-      "🟢 Barcode remove ho gaya.";
 
 }
 
 
-/* =================================
-   SAVE ENTRY
-================================= */
+/* =================================================
+   SHOW ENTRY FORM
+================================================= */
 
-async function saveEntry() {
-
+function showEntryForm() {
 
   if (
-    newBarcodes.length === 0
+    scannedBarcodes.length === 0
   ) {
 
-    alert(
-      "Pehle barcode scan karein."
+    showTemporaryMessage(
+
+      "⚠️ Barcode nahi hai",
+
+      "Pehle kam se kam ek barcode scan karein.",
+
+      "warning"
+
+    );
+
+    return;
+
+  }
+
+
+  document
+    .getElementById("formSection")
+    .classList.remove("hidden");
+
+
+  document
+    .getElementById("openFormBtn")
+    .classList.add("hidden");
+
+
+  /*
+   * Scanner stop
+   */
+
+  stopScanner();
+
+}
+
+
+/* =================================================
+   SUBMIT ENTRY
+================================================= */
+
+async function submitEntry() {
+
+  if (
+    scannedBarcodes.length === 0
+  ) {
+
+    showFormMessage(
+
+      "❌ Barcode list empty hai.",
+
+      "error"
+
     );
 
     return;
@@ -1366,56 +972,61 @@ async function saveEntry() {
 
   const designCode =
     document
-      .getElementById(
-        "designCode"
-      )
-      .value.trim();
+      .getElementById("designCode")
+      .value
+      .trim();
 
 
   const designName =
     document
-      .getElementById(
-        "designName"
-      )
-      .value.trim();
+      .getElementById("designName")
+      .value
+      .trim();
 
 
   const size =
     document
-      .getElementById(
-        "size"
-      )
-      .value.trim();
+      .getElementById("size")
+      .value
+      .trim();
 
 
   const color =
     document
-      .getElementById(
-        "color"
-      )
-      .value.trim();
+      .getElementById("color")
+      .value
+      .trim();
 
 
   const type =
     document
-      .getElementById(
-        "type"
-      )
-      .value.trim();
+      .getElementById("type")
+      .value
+      .trim();
 
 
   const mrp =
     document
-      .getElementById(
-        "mrp"
-      )
-      .value.trim();
+      .getElementById("mrp")
+      .value
+      .trim();
 
 
-  if (!designCode) {
+  if (
+    !designCode ||
+    !designName ||
+    !size ||
+    !color ||
+    !type ||
+    !mrp
+  ) {
 
-    alert(
-      "Design Code bharna zaroori hai."
+    showFormMessage(
+
+      "⚠️ Saari product details fill karein.",
+
+      "warning"
+
     );
 
     return;
@@ -1423,77 +1034,18 @@ async function saveEntry() {
   }
 
 
-  if (!designName) {
-
-    alert(
-      "Design Name bharna zaroori hai."
-    );
-
-    return;
-
-  }
+  const submitBtn =
+    document
+      .getElementById("submitBtn");
 
 
-  if (!size) {
+  submitBtn.disabled = true;
 
-    alert(
-      "Size bharna zaroori hai."
-    );
-
-    return;
-
-  }
-
-
-  if (!color) {
-
-    alert(
-      "Color bharna zaroori hai."
-    );
-
-    return;
-
-  }
-
-
-  if (!type) {
-
-    alert(
-      "Type bharna zaroori hai."
-    );
-
-    return;
-
-  }
-
-
-  if (!mrp) {
-
-    alert(
-      "MRP bharna zaroori hai."
-    );
-
-    return;
-
-  }
-
-
-  const saveBtn =
-    document.getElementById(
-      "saveBtn"
-    );
-
-
-  saveBtn.disabled =
-    true;
-
-
-  saveBtn.innerText =
-    "⏳ Saving...";
+  submitBtn.innerText =
+    "⏳ Products sheet mein save ho raha hai...";
 
 
   try {
-
 
     const params =
       new URLSearchParams();
@@ -1505,9 +1057,14 @@ async function saveEntry() {
     );
 
 
+    /*
+     * Important:
+     * Har barcode new line mein
+     */
+
     params.append(
       "barcodes",
-      newBarcodes.join("\n")
+      scannedBarcodes.join("\n")
     );
 
 
@@ -1547,12 +1104,20 @@ async function saveEntry() {
     );
 
 
+    /*
+     * Google Apps Script
+     */
+
     const response =
       await fetch(
 
         API_URL +
         "?" +
-        params.toString()
+        params.toString(),
+
+        {
+          method: "GET"
+        }
 
       );
 
@@ -1565,73 +1130,87 @@ async function saveEntry() {
 
 
     if (
-
-      data.success &&
-
       data.status ===
       "ENTRY_SUCCESS"
-
     ) {
 
+      /*
+       * Form hide
+       */
 
-      await stopScanner();
+      document
+        .getElementById("formSection")
+        .classList.add("hidden");
 
 
       document
-        .getElementById(
-          "productForm"
-        )
-        .style.display =
-          "none";
+        .getElementById("entryListSection")
+        .classList.add("hidden");
 
 
       document
-        .getElementById(
-          "result"
-        )
-        .style.display =
-          "none";
+        .getElementById("scannerSection")
+        .classList.add("hidden");
+
+
+      /*
+       * Thank You
+       */
+
+      const final =
+        document
+          .getElementById(
+            "finalMessage"
+          );
+
+
+      final.className =
+        "message success";
+
+
+      final.innerHTML = `
+
+        <h2>🎉 Thank You!</h2>
+
+        <p>
+          Entry successfully complete ho gayi.
+        </p>
+
+        <p>
+          <b>${data.count}</b>
+          product(s) Products sheet mein add ho gaye.
+        </p>
+
+      `;
+
+
+      final
+        .classList
+        .remove("hidden");
 
 
       document
-        .getElementById(
-          "thankYou"
-        )
-        .style.display =
-          "block";
+        .getElementById("resetBtn")
+        .classList.remove("hidden");
 
-
-      document
-        .getElementById(
-          "thankText"
-        )
-        .innerHTML =
-
-          "🟢 Entry successfully completed.<br><br>" +
-
-          "<strong>" +
-
-          data.count +
-
-          "</strong> products Products sheet mein add ho gaye.<br><br>" +
-
-          "Scan Log mein ENTRY nahi hui.";
 
     }
 
     else {
 
+      showFormMessage(
 
-      alert(
+        "❌ " +
+        (
+          data.message ||
+          "Entry save nahi hui."
+        ),
 
-        data.message ||
-
-        "Entry save nahi hui."
+        "error"
 
       );
 
     }
-
 
   }
 
@@ -1640,182 +1219,196 @@ async function saveEntry() {
     console.error(error);
 
 
-    alert(
-      "Google Sheet se connection nahi ho paya."
+    showFormMessage(
+
+      "⚠️ Google Sheet se connection nahi ho paya.",
+
+      "error"
+
     );
 
   }
 
 
-  saveBtn.disabled =
-    false;
+  submitBtn.disabled = false;
 
-
-  saveBtn.innerText =
-    "💾 SAVE ENTRY";
+  submitBtn.innerText =
+    "✅ Submit Entry";
 
 }
 
 
-/* =================================
-   NEW SCAN
-================================= */
+/* =================================================
+   EXIT BARCODE
+================================================= */
 
-function newScan() {
+async function processExitBarcode(barcode) {
 
-
-  newBarcodes = [];
-
-  mode = "";
-
-  lastBarcode = "";
-
-  lastScanTime = 0;
-
-  checking = false;
+  setStatus(
+    "🔍 Exit product check ho raha hai..."
+  );
 
 
-  document
-    .getElementById(
-      "thankYou"
-    )
-    .style.display =
-      "none";
+  try {
+
+    const url =
+      API_URL +
+      "?action=processExit" +
+      "&barcode=" +
+      encodeURIComponent(barcode);
 
 
-  document
-    .getElementById(
-      "scannerArea"
-    )
-    .style.display =
-      "none";
+    const response =
+      await fetch(url);
 
 
-  document
-    .getElementById(
-      "productForm"
-    )
-    .style.display =
-      "none";
+    const data =
+      await response.json();
 
 
-  document
-    .getElementById(
-      "result"
-    )
-    .style.display =
-      "none";
+    console.log(data);
 
 
-  document
-    .getElementById(
-      "modeSelection"
-    )
-    .style.display =
-      "block";
+    if (
+      data.status ===
+      "EXIT_SUCCESS"
+    ) {
+
+      /*
+       * Product successfully exit
+       */
+
+      stopScanner();
 
 
-  clearForm();
-
-  updateBarcodeList();
-
-}
-
-
-/* =================================
-   CLEAR FORM
-================================= */
-
-function clearForm() {
+      document
+        .getElementById(
+          "scannerSection"
+        )
+        .classList.add("hidden");
 
 
-  document
-    .getElementById(
-      "designCode"
-    )
-    .value = "";
+      const result =
+        document
+          .getElementById(
+            "exitResult"
+          );
 
 
-  document
-    .getElementById(
-      "designName"
-    )
-    .value = "";
+      result.className =
+        "product-box";
 
 
-  document
-    .getElementById(
-      "size"
-    )
-    .value = "";
+      result.innerHTML = `
+
+        <h3>✅ EXIT Successful</h3>
+
+        <div class="product-row">
+          <b>Barcode:</b>
+          ${escapeHtml(data.barcode)}
+        </div>
+
+        <div class="product-row">
+          <b>Design Code:</b>
+          ${escapeHtml(data.designCode)}
+        </div>
+
+        <div class="product-row">
+          <b>Design Name:</b>
+          ${escapeHtml(data.designName)}
+        </div>
+
+        <div class="product-row">
+          <b>Size:</b>
+          ${escapeHtml(data.size)}
+        </div>
+
+        <div class="product-row">
+          <b>Color:</b>
+          ${escapeHtml(data.color)}
+        </div>
+
+        <div class="product-row">
+          <b>Type:</b>
+          ${escapeHtml(data.type)}
+        </div>
+
+        <div class="product-row">
+          <b>MRP:</b>
+          ₹${escapeHtml(data.mrp)}
+        </div>
+
+        <br>
+
+        <div class="message success">
+          🎉 Product Products sheet se remove ho gaya
+          aur Scan Log mein EXIT save ho gaya.
+        </div>
+
+      `;
 
 
-  document
-    .getElementById(
-      "color"
-    )
-    .value = "";
+      result
+        .classList
+        .remove("hidden");
 
 
-  document
-    .getElementById(
-      "type"
-    )
-    .value = "";
+      document
+        .getElementById("resetBtn")
+        .classList.remove("hidden");
 
 
-  document
-    .getElementById(
-      "mrp"
-    )
-    .value = "";
+    }
 
-}
+    else {
+
+      showTemporaryMessage(
+
+        "❌ Product nahi mila",
+
+        data.message ||
+        "Ye barcode Products sheet mein nahi hai.",
+
+        "error"
+
+      );
+
+    }
+
+  }
+
+  catch (error) {
+
+    console.error(error);
 
 
-/* =================================
-   SHOW RESULT
-================================= */
+    showTemporaryMessage(
 
-function showResult(
-  type,
-  title,
-  content
-) {
+      "⚠️ Connection Error",
 
+      "Google Sheet se connection nahi ho paya.",
 
-  const box =
-    document.getElementById(
-      "result"
+      "error"
+
     );
 
-
-  box.style.display =
-    "block";
+  }
 
 
-  box.className =
-    "result " +
-    type;
+  setTimeout(function() {
 
+    processingBarcode = false;
 
-  box.innerHTML =
-
-    "<h3>" +
-    title +
-    "</h3>" +
-
-    content;
+  }, 1000);
 
 }
 
 
-/* =================================
+/* =================================================
    STOP SCANNER
-================================= */
+================================================= */
 
 async function stopScanner() {
-
 
   if (
     !scanner ||
@@ -1831,9 +1424,7 @@ async function stopScanner() {
 
     await scanner.stop();
 
-    scanner.clear();
-
-    scanning = false;
+    await scanner.clear();
 
   }
 
@@ -1843,35 +1434,244 @@ async function stopScanner() {
 
   }
 
+
+  scanning = false;
+
 }
 
 
-/* =================================
-   SCAN FAILURE
-================================= */
+/* =================================================
+   STATUS
+================================================= */
 
-function onScanFailure(error) {
+function setStatus(message) {
+
+  document
+    .getElementById("status")
+    .innerText =
+      message;
+
+}
+
+
+/* =================================================
+   TEMPORARY MESSAGE
+================================================= */
+
+function showTemporaryMessage(
+  title,
+  message,
+  type
+) {
+
+  const existing =
+    document.getElementById(
+      "temporaryMessage"
+    );
+
+
+  if (existing) {
+
+    existing.remove();
+
+  }
+
+
+  const div =
+    document.createElement(
+      "div"
+    );
+
+
+  div.id =
+    "temporaryMessage";
+
+
+  div.className =
+    "message " + type;
+
+
+  div.innerHTML = `
+
+    <b>${escapeHtml(title)}</b>
+
+    <br><br>
+
+    ${escapeHtml(message)}
+
+  `;
+
+
+  document
+    .querySelector(".card")
+    .appendChild(div);
+
+
+  setTimeout(function() {
+
+    div.remove();
+
+  }, 3500);
+
+}
+
+
+/* =================================================
+   FORM MESSAGE
+================================================= */
+
+function showFormMessage(
+  message,
+  type
+) {
+
+  const form =
+    document.getElementById(
+      "formSection"
+    );
+
+
+  const old =
+    document.getElementById(
+      "formMessage"
+    );
+
+
+  if (old) {
+
+    old.remove();
+
+  }
+
+
+  const div =
+    document.createElement(
+      "div"
+    );
+
+
+  div.id =
+    "formMessage";
+
+
+  div.className =
+    "message " + type;
+
+
+  div.innerText =
+    message;
+
+
+  form.prepend(div);
+
+}
+
+
+/* =================================================
+   RESET
+================================================= */
+
+async function resetSystem() {
+
+  await stopScanner();
+
+
+  currentMode = "";
+
+  scannedBarcodes = [];
+
+  processingBarcode = false;
+
+  lastBarcode = "";
+
+
+  document
+    .getElementById("modeSection")
+    .classList.remove("hidden");
+
+
+  document
+    .getElementById("scannerSection")
+    .classList.add("hidden");
+
+
+  document
+    .getElementById("entryListSection")
+    .classList.add("hidden");
+
+
+  document
+    .getElementById("formSection")
+    .classList.add("hidden");
+
+
+  document
+    .getElementById("exitResult")
+    .classList.add("hidden");
+
+
+  document
+    .getElementById("finalMessage")
+    .classList.add("hidden");
+
+
+  document
+    .getElementById("resetBtn")
+    .classList.add("hidden");
+
+
+  document
+    .getElementById("openFormBtn")
+    .classList.remove("hidden");
+
+
+  document
+    .getElementById("barcodeList")
+    .innerHTML = "";
+
+
+  document
+    .getElementById("barcodeCount")
+    .innerText =
+      "0 Barcode";
+
 
   /*
-   * Normal scanning errors ignore
+   * Clear form
    */
+
+  [
+    "designCode",
+    "designName",
+    "size",
+    "color",
+    "type",
+    "mrp"
+  ].forEach(function(id) {
+
+    const element =
+      document.getElementById(id);
+
+    if (element) {
+
+      element.value = "";
+
+    }
+
+  });
 
 }
 
 
-/* =================================
+/* =================================================
    ESCAPE HTML
-================================= */
+================================================= */
 
 function escapeHtml(value) {
 
-
   if (
-
     value === null ||
-
     value === undefined
-
   ) {
 
     return "";

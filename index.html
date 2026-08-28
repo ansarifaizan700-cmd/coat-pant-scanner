@@ -1,357 +1,634 @@
 ```html
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
 
-  <title>Coat Pant Barcode Scanner</title>
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1.0">
 
-  <script
-    src="https://unpkg.com/html5-qrcode"
-    type="text/javascript">
-  </script>
+<title>Coat Pant Inventory Scanner</title>
 
-  <style>
+<script
+  src="https://unpkg.com/html5-qrcode"
+  type="text/javascript">
+</script>
 
-    * {
-      box-sizing: border-box;
-    }
 
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #f4f7fb;
-      color: #111827;
-    }
+<style>
 
-    .container {
-      max-width: 600px;
-      margin: auto;
-      padding: 20px;
-    }
+* {
+  box-sizing: border-box;
+}
 
-    .card {
-      background: white;
-      border-radius: 18px;
-      padding: 20px;
-      box-shadow: 0 8px 30px rgba(0,0,0,.08);
-    }
+body {
 
-    h1 {
-      text-align: center;
-      margin-top: 0;
-      font-size: 26px;
-    }
+  margin: 0;
 
-    .subtitle {
-      text-align: center;
-      color: #6b7280;
-      margin-bottom: 20px;
-    }
+  font-family: Arial, sans-serif;
 
-    #reader {
-      width: 100%;
-      overflow: hidden;
-      border-radius: 15px;
-    }
+  background: #f4f7fb;
 
-    button {
-      width: 100%;
-      border: none;
-      border-radius: 10px;
-      padding: 14px;
-      margin-top: 12px;
-      font-size: 16px;
-      font-weight: bold;
-      cursor: pointer;
-    }
+  color: #111827;
 
-    button:disabled {
-      opacity: .6;
-      cursor: not-allowed;
-    }
+}
 
-    #startBtn {
-      background: #2563eb;
-      color: white;
-    }
+.container {
 
-    #stopBtn {
-      background: #dc2626;
-      color: white;
-    }
+  max-width: 600px;
 
-    #scanMoreBtn {
-      background: #16a34a;
-      color: white;
-    }
+  margin: auto;
 
-    #saveBtn {
-      background: #7c3aed;
-      color: white;
-    }
+  padding: 20px;
 
-    .result {
-      margin-top: 20px;
-      padding: 18px;
-      border-radius: 14px;
-      background: #f8fafc;
-      display: none;
-    }
+}
 
-    .success {
-      border-left: 5px solid #16a34a;
-    }
+.card {
 
-    .error {
-      border-left: 5px solid #dc2626;
-    }
+  background: white;
 
-    .warning {
-      border-left: 5px solid #f59e0b;
-    }
+  border-radius: 18px;
 
-    .new {
-      border-left: 5px solid #2563eb;
-    }
+  padding: 20px;
 
-    .row {
-      padding: 8px 0;
-      border-bottom: 1px solid #e5e7eb;
-    }
+  box-shadow:
+    0 8px 30px rgba(0,0,0,.08);
 
-    .row:last-child {
-      border-bottom: none;
-    }
+}
 
-    .label {
-      font-weight: bold;
-      color: #374151;
-    }
+h1 {
 
-    #status {
-      text-align: center;
-      margin-top: 15px;
-      font-weight: bold;
-    }
+  text-align: center;
 
-    /* PRODUCT FORM */
+  margin-top: 0;
 
-    #productForm {
-      display: none;
-      margin-top: 20px;
-      padding: 18px;
-      border-radius: 14px;
-      background: #f8fafc;
-      border: 1px solid #e5e7eb;
-    }
+  font-size: 26px;
 
-    #productForm h2 {
-      margin-top: 0;
-    }
+}
 
-    .form-label {
-      display: block;
-      margin-top: 12px;
-      margin-bottom: 5px;
-      font-weight: bold;
-    }
+.subtitle {
 
-    .form-input {
-      width: 100%;
-      padding: 12px;
-      border: 1px solid #d1d5db;
-      border-radius: 8px;
-      font-size: 16px;
-      outline: none;
-    }
+  text-align: center;
 
-    .form-input:focus {
-      border-color: #2563eb;
-    }
+  color: #6b7280;
 
-    .barcode-count {
-      text-align: center;
-      font-size: 20px;
-      font-weight: bold;
-      margin: 12px 0;
-    }
+  margin-bottom: 20px;
 
-    .barcode-list {
-      background: white;
-      border: 1px solid #e5e7eb;
-      border-radius: 10px;
-      padding: 10px;
-      max-height: 220px;
-      overflow-y: auto;
-    }
+}
 
-    .barcode-item {
-      padding: 9px;
-      margin-bottom: 5px;
-      background: #f3f4f6;
-      border-radius: 7px;
-      font-weight: bold;
-    }
 
-    .barcode-item:last-child {
-      margin-bottom: 0;
-    }
+/* MODE */
 
-  </style>
+.mode-title {
+
+  text-align: center;
+
+  font-size: 18px;
+
+  font-weight: bold;
+
+  margin: 20px 0 10px;
+
+}
+
+.mode-buttons {
+
+  display: flex;
+
+  gap: 12px;
+
+}
+
+.mode-btn {
+
+  flex: 1;
+
+  padding: 18px 10px;
+
+  border: none;
+
+  border-radius: 12px;
+
+  font-size: 18px;
+
+  font-weight: bold;
+
+  cursor: pointer;
+
+}
+
+.entry-btn {
+
+  background: #16a34a;
+
+  color: white;
+
+}
+
+.exit-btn {
+
+  background: #dc2626;
+
+  color: white;
+
+}
+
+
+/* SCANNER */
+
+#scannerArea {
+
+  display: none;
+
+}
+
+#reader {
+
+  width: 100%;
+
+  overflow: hidden;
+
+  border-radius: 15px;
+
+  margin-top: 15px;
+
+}
+
+
+button {
+
+  width: 100%;
+
+  border: none;
+
+  border-radius: 10px;
+
+  padding: 14px;
+
+  margin-top: 12px;
+
+  font-size: 16px;
+
+  font-weight: bold;
+
+  cursor: pointer;
+
+}
+
+button:disabled {
+
+  opacity: .6;
+
+  cursor: not-allowed;
+
+}
+
+#stopBtn {
+
+  background: #dc2626;
+
+  color: white;
+
+}
+
+
+/* RESULT */
+
+.result {
+
+  margin-top: 20px;
+
+  padding: 18px;
+
+  border-radius: 14px;
+
+  background: #f8fafc;
+
+  display: none;
+
+}
+
+.success {
+
+  border-left: 5px solid #16a34a;
+
+}
+
+.error {
+
+  border-left: 5px solid #dc2626;
+
+}
+
+.warning {
+
+  border-left: 5px solid #f59e0b;
+
+}
+
+.new {
+
+  border-left: 5px solid #2563eb;
+
+}
+
+.row {
+
+  padding: 8px 0;
+
+  border-bottom: 1px solid #e5e7eb;
+
+}
+
+.row:last-child {
+
+  border-bottom: none;
+
+}
+
+.label {
+
+  font-weight: bold;
+
+  color: #374151;
+
+}
+
+#status {
+
+  text-align: center;
+
+  margin-top: 15px;
+
+  font-weight: bold;
+
+}
+
+
+/* FORM */
+
+#productForm {
+
+  display: none;
+
+  margin-top: 20px;
+
+  padding: 18px;
+
+  border-radius: 14px;
+
+  background: #f8fafc;
+
+  border: 1px solid #e5e7eb;
+
+}
+
+#productForm h2 {
+
+  margin-top: 0;
+
+}
+
+.form-label {
+
+  display: block;
+
+  margin-top: 12px;
+
+  margin-bottom: 5px;
+
+  font-weight: bold;
+
+}
+
+.form-input {
+
+  width: 100%;
+
+  padding: 12px;
+
+  border: 1px solid #d1d5db;
+
+  border-radius: 8px;
+
+  font-size: 16px;
+
+}
+
+.barcode-count {
+
+  text-align: center;
+
+  font-size: 20px;
+
+  font-weight: bold;
+
+  margin: 12px 0;
+
+}
+
+.barcode-list {
+
+  background: white;
+
+  border: 1px solid #e5e7eb;
+
+  border-radius: 10px;
+
+  padding: 10px;
+
+  max-height: 220px;
+
+  overflow-y: auto;
+
+}
+
+.barcode-item {
+
+  padding: 9px;
+
+  margin-bottom: 5px;
+
+  background: #f3f4f6;
+
+  border-radius: 7px;
+
+  font-weight: bold;
+
+}
+
+#saveBtn {
+
+  background: #7c3aed;
+
+  color: white;
+
+}
+
+
+/* THANK YOU */
+
+#thankYou {
+
+  display: none;
+
+  text-align: center;
+
+  padding: 30px 10px;
+
+}
+
+.thank-icon {
+
+  font-size: 60px;
+
+}
+
+.thank-title {
+
+  font-size: 25px;
+
+  font-weight: bold;
+
+  margin: 15px 0;
+
+}
+
+.thank-text {
+
+  color: #6b7280;
+
+  line-height: 1.6;
+
+}
+
+#newScanBtn {
+
+  background: #2563eb;
+
+  color: white;
+
+}
+
+</style>
 
 </head>
 
+
 <body>
+
 
 <div class="container">
 
-  <div class="card">
+<div class="card">
 
-    <h1>📦 Coat Pant Scanner</h1>
 
-    <div class="subtitle">
-      Scan barcode to check product details
-    </div>
+<h1>📦 Coat Pant Inventory</h1>
 
-    <div id="reader"></div>
+<div class="subtitle">
+  Barcode Inventory Management
+</div>
+
+
+<!-- MODE SELECTION -->
+
+<div id="modeSelection">
+
+  <div class="mode-title">
+    Select Inventory Action
+  </div>
+
+  <div class="mode-buttons">
 
     <button
-      id="startBtn"
-      onclick="startScanner()">
-      📷 Start Camera
+      class="mode-btn entry-btn"
+      onclick="selectMode('ENTRY')">
+
+      🟢 ENTRY
+
     </button>
 
     <button
-      id="stopBtn"
-      onclick="stopScanner()"
-      style="display:none;">
-      ⛔ Stop Camera
+      class="mode-btn exit-btn"
+      onclick="selectMode('EXIT')">
+
+      🔴 EXIT
+
     </button>
-
-    <div id="status">
-      Camera start karne ke liye button dabayein
-    </div>
-
-    <!-- RESULT -->
-
-    <div
-      id="result"
-      class="result">
-    </div>
-
-
-    <!-- NEW PRODUCT FORM -->
-
-    <div id="productForm">
-
-      <h2>➕ New Product</h2>
-
-      <p>
-        Naya barcode mila hai. Neeche product ki details
-        <strong>sirf ek baar</strong> bharein.
-      </p>
-
-
-      <div class="barcode-count">
-        📦 <span id="barcodeCount">0</span> Barcodes
-      </div>
-
-
-      <div
-        id="barcodeList"
-        class="barcode-list">
-      </div>
-
-
-      <button
-        id="scanMoreBtn"
-        onclick="continueScanning()">
-
-        📷 Scan More Barcodes
-
-      </button>
-
-
-      <label class="form-label">
-        Design Code
-      </label>
-
-      <input
-        id="designCode"
-        class="form-input"
-        type="text"
-        placeholder="Example: C101">
-
-
-      <label class="form-label">
-        Design Name
-      </label>
-
-      <input
-        id="designName"
-        class="form-input"
-        type="text"
-        placeholder="Example: Royal Coat">
-
-
-      <label class="form-label">
-        Size
-      </label>
-
-      <input
-        id="size"
-        class="form-input"
-        type="text"
-        placeholder="Example: 40">
-
-
-      <label class="form-label">
-        Color
-      </label>
-
-      <input
-        id="color"
-        class="form-input"
-        type="text"
-        placeholder="Example: Black">
-
-
-      <label class="form-label">
-        Type
-      </label>
-
-      <input
-        id="type"
-        class="form-input"
-        type="text"
-        placeholder="Example: Coat">
-
-
-      <label class="form-label">
-        MRP
-      </label>
-
-      <input
-        id="mrp"
-        class="form-input"
-        type="number"
-        placeholder="Example: 5000">
-
-
-      <button
-        id="saveBtn"
-        onclick="saveProduct()">
-
-        💾 Save All Products
-
-      </button>
-
-    </div>
 
   </div>
+
+</div>
+
+
+<!-- SCANNER -->
+
+<div id="scannerArea">
+
+  <div id="reader"></div>
+
+  <button
+    id="stopBtn"
+    onclick="stopScanner()">
+
+    ⛔ Stop Camera
+
+  </button>
+
+</div>
+
+
+<div id="status"></div>
+
+
+<!-- RESULT -->
+
+<div
+  id="result"
+  class="result">
+</div>
+
+
+<!-- PRODUCT FORM -->
+
+<div id="productForm">
+
+  <h2>➕ New Product Entry</h2>
+
+  <p>
+    Same product ke multiple barcodes
+    scan kar sakte hain.
+    Details sirf <strong>ek baar</strong> bharein.
+  </p>
+
+
+  <div class="barcode-count">
+
+    📦
+    <span id="barcodeCount">0</span>
+    Barcodes
+
+  </div>
+
+
+  <div
+    id="barcodeList"
+    class="barcode-list">
+  </div>
+
+
+  <label class="form-label">
+    Design Code
+  </label>
+
+  <input
+    id="designCode"
+    class="form-input"
+    type="text"
+    placeholder="Example: C101">
+
+
+  <label class="form-label">
+    Design Name
+  </label>
+
+  <input
+    id="designName"
+    class="form-input"
+    type="text"
+    placeholder="Example: Royal Coat">
+
+
+  <label class="form-label">
+    Size
+  </label>
+
+  <input
+    id="size"
+    class="form-input"
+    type="text"
+    placeholder="Example: 40">
+
+
+  <label class="form-label">
+    Color
+  </label>
+
+  <input
+    id="color"
+    class="form-input"
+    type="text"
+    placeholder="Example: Black">
+
+
+  <label class="form-label">
+    Type
+  </label>
+
+  <input
+    id="type"
+    class="form-input"
+    type="text"
+    placeholder="Example: Coat">
+
+
+  <label class="form-label">
+    MRP
+  </label>
+
+  <input
+    id="mrp"
+    class="form-input"
+    type="number"
+    placeholder="Example: 5000">
+
+
+  <button
+    id="saveBtn"
+    onclick="saveEntry()">
+
+    💾 SAVE ENTRY
+
+  </button>
+
+</div>
+
+
+<!-- THANK YOU -->
+
+<div id="thankYou">
+
+  <div class="thank-icon">
+    ✅
+  </div>
+
+  <div class="thank-title">
+    Thank You!
+  </div>
+
+  <div
+    id="thankText"
+    class="thank-text">
+
+    Entry successfully completed.
+
+  </div>
+
+  <button
+    id="newScanBtn"
+    onclick="newScan()">
+
+    📷 New Scan
+
+  </button>
+
+</div>
+
+
+</div>
 
 </div>
 
@@ -359,45 +636,80 @@
 <script>
 
 
-/* ======================================================
-   GOOGLE APPS SCRIPT API
-   ====================================================== */
+/* =====================================================
+   API
+   ===================================================== */
 
 const API_URL =
 "https://script.google.com/macros/s/AKfycbxF4O0CVmLIW9xsPkLw133SfQvz2yGjxETbTyaoANKSVvloPZtuPKbDTbiy-1zTO58PcQ/exec";
 
 
-/* ======================================================
+/* =====================================================
    VARIABLES
-   ====================================================== */
+   ===================================================== */
 
 let scanner = null;
 
 let scanning = false;
 
+let mode = "";
+
+let checking = false;
+
 let lastBarcode = "";
 
 let lastScanTime = 0;
 
-
-/*
- * Current new product batch ke
- * saare unique barcodes.
- */
-
 let newBarcodes = [];
 
 
-/*
- * API request chal rahi hai ya nahi.
- */
+/* =====================================================
+   SELECT MODE
+   ===================================================== */
 
-let checkingBarcode = false;
+function selectMode(selectedMode) {
+
+  mode =
+    selectedMode;
 
 
-/* ======================================================
-   START SCANNER
-   ====================================================== */
+  document
+    .getElementById(
+      "modeSelection"
+    )
+    .style.display =
+    "none";
+
+
+  document
+    .getElementById(
+      "scannerArea"
+    )
+    .style.display =
+    "block";
+
+
+  document
+    .getElementById(
+      "status"
+    )
+    .innerText =
+
+    selectedMode === "ENTRY"
+
+      ? "🟢 ENTRY Mode — Camera start ho raha hai..."
+
+      : "🔴 EXIT Mode — Camera start ho raha hai...";
+
+
+  startScanner();
+
+}
+
+
+/* =====================================================
+   START CAMERA
+   ===================================================== */
 
 function startScanner() {
 
@@ -440,21 +752,16 @@ function startScanner() {
 
 
     document
-      .getElementById("status")
+      .getElementById(
+        "status"
+      )
       .innerText =
-      "📷 Camera ready — barcode scan karein";
 
+      mode === "ENTRY"
 
-    document
-      .getElementById("startBtn")
-      .style.display =
-      "none";
+        ? "🟢 ENTRY — Barcode scan karein"
 
-
-    document
-      .getElementById("stopBtn")
-      .style.display =
-      "block";
+        : "🔴 EXIT — Barcode scan karein";
 
   })
 
@@ -462,20 +769,21 @@ function startScanner() {
 
     console.error(error);
 
-
     document
-      .getElementById("status")
+      .getElementById(
+        "status"
+      )
       .innerText =
-      "❌ Camera start nahi ho paya. Camera permission check karein.";
+      "❌ Camera start nahi ho paya.";
 
   });
 
 }
 
 
-/* ======================================================
-   BARCODE SCANNED
-   ====================================================== */
+/* =====================================================
+   SCAN SUCCESS
+   ===================================================== */
 
 function onScanSuccess(decodedText) {
 
@@ -489,11 +797,6 @@ function onScanSuccess(decodedText) {
   const now =
     Date.now();
 
-
-  /*
-   * Camera same barcode ko continuously
-   * detect karti hai.
-   */
 
   if (
 
@@ -516,95 +819,60 @@ function onScanSuccess(decodedText) {
     now;
 
 
+  if (checking) return;
+
+
   /*
-   * Current batch mein barcode
-   * already hai to API call nahi.
+   * ENTRY batch mein same barcode
    */
 
   if (
+
+    mode === "ENTRY" &&
+
     newBarcodes.includes(barcode)
+
   ) {
 
-    showMessage(
+    showResult(
 
       "warning",
 
       "⚠️ Duplicate Barcode",
 
-      `
-      <p>
-      <strong>${escapeHtml(barcode)}</strong>
-      current batch mein already scan ho chuka hai.
-      </p>
-      `
+      `<p>
+        ${escapeHtml(barcode)}
+        already current batch mein hai.
+      </p>`
 
     );
 
-
     return;
 
   }
 
 
-  if (checkingBarcode) {
-
-    return;
-
-  }
-
-
-  checkingBarcode =
-    true;
+  checking = true;
 
 
   document
-    .getElementById("status")
+    .getElementById(
+      "status"
+    )
     .innerText =
-    "🔍 Barcode check ho raha hai: " +
-    barcode;
+    "🔍 Barcode checking...";
 
 
-  getProduct(barcode);
-
-}
-
-
-/* ======================================================
-   SCAN FAILURE
-   ====================================================== */
-
-function onScanFailure(error) {
-
-  // Normal scanning errors ignore
+  checkBarcode(barcode);
 
 }
 
 
-/* ======================================================
-   CHECK BARCODE
-   ====================================================== */
+/* =====================================================
+   BARCODE CHECK
+   ===================================================== */
 
-async function getProduct(barcode) {
-
-
-  const resultBox =
-    document.getElementById("result");
-
-
-  resultBox.style.display =
-    "block";
-
-
-  resultBox.className =
-    "result";
-
-
-  resultBox.innerHTML =
-
-    "<h3>⏳ Checking...</h3>" +
-
-    "<p>Google Sheet mein barcode check ho raha hai...</p>";
-
+async function checkBarcode(barcode) {
 
   try {
 
@@ -613,8 +881,12 @@ async function getProduct(barcode) {
 
       API_URL +
 
-      "?action=check&barcode=" +
+      "?action=check" +
 
+      "&mode=" +
+      encodeURIComponent(mode) +
+
+      "&barcode=" +
       encodeURIComponent(barcode);
 
 
@@ -629,174 +901,54 @@ async function getProduct(barcode) {
     console.log(data);
 
 
-    /* ==================================================
-       ALREADY REGISTERED
-       ================================================== */
+    /* =================================================
+       ENTRY - NEW
+       ================================================= */
 
     if (
-      data.status ===
-      "ALREADY_REGISTERED"
+
+      mode === "ENTRY" &&
+
+      data.status === "NEW_BARCODE"
+
     ) {
 
 
-      resultBox.className =
-        "result warning";
-
-
-      resultBox.innerHTML = `
-
-        <h3>⚠️ Barcode Already Registered</h3>
-
-        <div class="row">
-          <span class="label">Barcode:</span>
-          ${escapeHtml(data.barcode)}
-        </div>
-
-        <div class="row">
-          <span class="label">Design Code:</span>
-          ${escapeHtml(data.designCode)}
-        </div>
-
-        <div class="row">
-          <span class="label">Design Name:</span>
-          ${escapeHtml(data.designName)}
-        </div>
-
-        <div class="row">
-          <span class="label">Size:</span>
-          ${escapeHtml(data.size)}
-        </div>
-
-        <div class="row">
-          <span class="label">Color:</span>
-          ${escapeHtml(data.color)}
-        </div>
-
-        <p>
-          ❌ Ye barcode Product List mein
-          already registered hai.
-          Dobara add nahi hoga.
-        </p>
-
-      `;
-
-
-      document
-        .getElementById("status")
-        .innerText =
-        "⚠️ Barcode already registered";
-
-
-      return;
-
-    }
-
-
-    /* ==================================================
-       ALREADY SCANNED
-       ================================================== */
-
-    if (
-      data.status ===
-      "ALREADY_SCANNED"
-    ) {
-
-
-      resultBox.className =
-        "result warning";
-
-
-      resultBox.innerHTML = `
-
-        <h3>⚠️ Barcode Already Scanned</h3>
-
-        <div class="row">
-          <span class="label">Barcode:</span>
-          ${escapeHtml(data.barcode)}
-        </div>
-
-        <p>
-          ❌ Ye barcode Scan Log mein
-          already scan ho chuka hai.
-          Dobara scan allowed nahi hai.
-        </p>
-
-      `;
-
-
-      document
-        .getElementById("status")
-        .innerText =
-        "⚠️ Barcode already scanned";
-
-
-      return;
-
-    }
-
-
-    /* ==================================================
-       NEW BARCODE
-       ================================================== */
-
-    if (
-      data.status ===
-      "NEW_BARCODE"
-    ) {
-
-
-      /*
-       * Barcode ko current batch mein add karo.
-       */
-
-      if (
-        !newBarcodes.includes(
-          data.barcode
-        )
-      ) {
-
-        newBarcodes.push(
-          data.barcode
-        );
-
-      }
+      newBarcodes.push(
+        data.barcode
+      );
 
 
       updateBarcodeList();
 
 
-      openProductForm();
+      document
+        .getElementById(
+          "productForm"
+        )
+        .style.display =
+        "block";
 
 
-      resultBox.className =
-        "result new";
+      showResult(
 
+        "new",
 
-      resultBox.innerHTML = `
+        "🆕 New Barcode",
 
-        <h3>🆕 New Barcode</h3>
+        `<p>
+          Barcode successfully batch mein add ho gaya.
+        </p>`
 
-        <div class="row">
-          <span class="label">Barcode:</span>
-          ${escapeHtml(data.barcode)}
-        </div>
-
-        <p>
-          ✅ Barcode batch mein add ho gaya.
-        </p>
-
-        <p>
-          Ab aap isi product ke
-          aur barcodes scan kar sakte hain.
-        </p>
-
-      `;
+      );
 
 
       document
-        .getElementById("status")
+        .getElementById(
+          "status"
+        )
         .innerText =
-        "🟢 New barcode added — next barcode scan karein";
+        "🟢 Aur barcode scan karein ya form submit karein";
 
 
       return;
@@ -804,22 +956,68 @@ async function getProduct(barcode) {
     }
 
 
-    /* ==================================================
-       OLD SUCCESS RESPONSE
-       ================================================== */
+    /* =================================================
+       ENTRY - ALREADY REGISTERED
+       ================================================= */
 
     if (
-      data.success
+
+      mode === "ENTRY" &&
+
+      data.status === "ALREADY_REGISTERED"
+
     ) {
 
 
-      resultBox.className =
-        "result success";
+      showResult(
+
+        "warning",
+
+        "⚠️ Already Registered",
+
+        `
+
+        <div class="row">
+          <span class="label">Barcode:</span>
+          ${escapeHtml(data.barcode)}
+        </div>
+
+        <p>
+          Ye barcode Product List mein
+          already registered hai.
+          Dobara ENTRY nahi hogi.
+        </p>
+
+        `
+
+      );
 
 
-      resultBox.innerHTML = `
+      return;
 
-        <h3>✅ Product Found</h3>
+    }
+
+
+    /* =================================================
+       EXIT SUCCESS
+       ================================================= */
+
+    if (
+
+      mode === "EXIT" &&
+
+      data.status === "EXIT_SUCCESS"
+
+    ) {
+
+
+      showResult(
+
+        "success",
+
+        "✅ EXIT Successful",
+
+        `
 
         <div class="row">
           <span class="label">Barcode:</span>
@@ -827,12 +1025,7 @@ async function getProduct(barcode) {
         </div>
 
         <div class="row">
-          <span class="label">Design Code:</span>
-          ${escapeHtml(data.designCode)}
-        </div>
-
-        <div class="row">
-          <span class="label">Design Name:</span>
+          <span class="label">Design:</span>
           ${escapeHtml(data.designName)}
         </div>
 
@@ -846,23 +1039,13 @@ async function getProduct(barcode) {
           ${escapeHtml(data.color)}
         </div>
 
-        <div class="row">
-          <span class="label">Type:</span>
-          ${escapeHtml(data.type)}
-        </div>
+        <p>
+          📦 Product successfully OUT ho gaya.
+        </p>
 
-        <div class="row">
-          <span class="label">MRP:</span>
-          ₹${escapeHtml(data.mrp)}
-        </div>
+        `
 
-      `;
-
-
-      document
-        .getElementById("status")
-        .innerText =
-        "✅ Scan successful";
+      );
 
 
       return;
@@ -870,32 +1053,86 @@ async function getProduct(barcode) {
     }
 
 
-    /* ==================================================
-       UNKNOWN ERROR
-       ================================================== */
+    /* =================================================
+       EXIT - NOT FOUND
+       ================================================= */
 
-    resultBox.className =
-      "result error";
+    if (
+
+      mode === "EXIT" &&
+
+      data.status === "NOT_FOUND"
+
+    ) {
 
 
-    resultBox.innerHTML = `
+      showResult(
 
-      <h3>❌ Error</h3>
+        "error",
 
-      <p>
+        "❌ Product Not Found",
+
+        `<p>
+          ${escapeHtml(data.message)}
+        </p>`
+
+      );
+
+
+      return;
+
+    }
+
+
+    /* =================================================
+       EXIT - ALREADY OUT
+       ================================================= */
+
+    if (
+
+      mode === "EXIT" &&
+
+      data.status === "ALREADY_OUT"
+
+    ) {
+
+
+      showResult(
+
+        "warning",
+
+        "⚠️ Already OUT",
+
+        `<p>
+          ${escapeHtml(data.message)}
+        </p>`
+
+      );
+
+
+      return;
+
+    }
+
+
+    /* =================================================
+       OTHER ERROR
+       ================================================= */
+
+    showResult(
+
+      "error",
+
+      "❌ Error",
+
+      `<p>
         ${escapeHtml(
           data.message ||
-          "Unknown error"
+          "Something went wrong"
         )}
-      </p>
+      </p>`
 
-    `;
-
-
-    document
-      .getElementById("status")
-      .innerText =
-      "❌ Error";
+    );
 
 
   }
@@ -906,93 +1143,42 @@ async function getProduct(barcode) {
     console.error(error);
 
 
-    resultBox.className =
-      "result error";
+    showResult(
 
+      "error",
 
-    resultBox.innerHTML = `
+      "⚠️ Connection Error",
 
-      <h3>⚠️ Connection Error</h3>
-
-      <p>
+      `<p>
         Google Sheet se connection nahi ho paya.
-      </p>
+      </p>`
 
-      <p>
-        Barcode:
-        ${escapeHtml(barcode)}
-      </p>
-
-    `;
-
-
-    document
-      .getElementById("status")
-      .innerText =
-      "⚠️ Connection error";
+    );
 
   }
 
 
   finally {
 
-    checkingBarcode =
-      false;
+    checking = false;
 
   }
 
 }
 
 
-/* ======================================================
-   OPEN PRODUCT FORM
-   ====================================================== */
-
-function openProductForm() {
-
-  document
-    .getElementById("productForm")
-    .style.display =
-    "block";
-
-
-  /*
-   * First barcode add hone ke baad
-   * design code par focus.
-   */
-
-  if (
-    newBarcodes.length === 1
-  ) {
-
-    document
-      .getElementById("designCode")
-      .focus();
-
-  }
-
-}
-
-
-/* ======================================================
-   CONTINUE SCANNING
-   ====================================================== */
-
-function continueScanning() {
-
-  document
-    .getElementById("status")
-    .innerText =
-    "📷 Next barcode scan karein";
-
-}
-
-
-/* ======================================================
+/* =====================================================
    UPDATE BARCODE LIST
-   ====================================================== */
+   ===================================================== */
 
 function updateBarcodeList() {
+
+  document
+    .getElementById(
+      "barcodeCount"
+    )
+    .innerText =
+    newBarcodes.length;
 
 
   const list =
@@ -1001,24 +1187,11 @@ function updateBarcodeList() {
     );
 
 
-  const count =
-    document.getElementById(
-      "barcodeCount"
-    );
-
-
-  count.innerText =
-    newBarcodes.length;
-
-
   list.innerHTML = "";
 
 
   newBarcodes.forEach(
-    function (
-      barcode,
-      index
-    ) {
+    function(barcode, index) {
 
 
       const div =
@@ -1032,14 +1205,15 @@ function updateBarcodeList() {
 
 
       div.innerText =
+
         (index + 1) +
+
         ". " +
+
         barcode;
 
 
-      list.appendChild(
-        div
-      );
+      list.appendChild(div);
 
     }
   );
@@ -1047,11 +1221,11 @@ function updateBarcodeList() {
 }
 
 
-/* ======================================================
-   SAVE ALL PRODUCTS
-   ====================================================== */
+/* =====================================================
+   SAVE ENTRY
+   ===================================================== */
 
-async function saveProduct() {
+async function saveEntry() {
 
 
   if (
@@ -1072,8 +1246,7 @@ async function saveProduct() {
       .getElementById(
         "designCode"
       )
-      .value
-      .trim();
+      .value.trim();
 
 
   const designName =
@@ -1081,8 +1254,7 @@ async function saveProduct() {
       .getElementById(
         "designName"
       )
-      .value
-      .trim();
+      .value.trim();
 
 
   const size =
@@ -1090,8 +1262,7 @@ async function saveProduct() {
       .getElementById(
         "size"
       )
-      .value
-      .trim();
+      .value.trim();
 
 
   const color =
@@ -1099,8 +1270,7 @@ async function saveProduct() {
       .getElementById(
         "color"
       )
-      .value
-      .trim();
+      .value.trim();
 
 
   const type =
@@ -1108,8 +1278,7 @@ async function saveProduct() {
       .getElementById(
         "type"
       )
-      .value
-      .trim();
+      .value.trim();
 
 
   const mrp =
@@ -1117,19 +1286,12 @@ async function saveProduct() {
       .getElementById(
         "mrp"
       )
-      .value
-      .trim();
+      .value.trim();
 
-
-  /* ==================================================
-     REQUIRED FIELDS
-     ================================================== */
 
   if (!designCode) {
 
-    alert(
-      "Design Code bharna zaroori hai."
-    );
+    alert("Design Code bharna zaroori hai.");
 
     return;
 
@@ -1138,9 +1300,7 @@ async function saveProduct() {
 
   if (!designName) {
 
-    alert(
-      "Design Name bharna zaroori hai."
-    );
+    alert("Design Name bharna zaroori hai.");
 
     return;
 
@@ -1149,9 +1309,7 @@ async function saveProduct() {
 
   if (!size) {
 
-    alert(
-      "Size bharna zaroori hai."
-    );
+    alert("Size bharna zaroori hai.");
 
     return;
 
@@ -1160,9 +1318,7 @@ async function saveProduct() {
 
   if (!color) {
 
-    alert(
-      "Color bharna zaroori hai."
-    );
+    alert("Color bharna zaroori hai.");
 
     return;
 
@@ -1171,9 +1327,7 @@ async function saveProduct() {
 
   if (!type) {
 
-    alert(
-      "Type bharna zaroori hai."
-    );
+    alert("Type bharna zaroori hai.");
 
     return;
 
@@ -1182,9 +1336,7 @@ async function saveProduct() {
 
   if (!mrp) {
 
-    alert(
-      "MRP bharna zaroori hai."
-    );
+    alert("MRP bharna zaroori hai.");
 
     return;
 
@@ -1205,12 +1357,6 @@ async function saveProduct() {
     "⏳ Saving...";
 
 
-  document
-    .getElementById("status")
-    .innerText =
-    "⏳ Products save ho rahe hain...";
-
-
   try {
 
 
@@ -1220,7 +1366,7 @@ async function saveProduct() {
 
     params.append(
       "action",
-      "saveBatch"
+      "saveEntry"
     );
 
 
@@ -1280,122 +1426,21 @@ async function saveProduct() {
       await response.json();
 
 
-    console.log(data);
-
-
-    /* ==================================================
-       SAVE SUCCESS
-       ================================================== */
-
     if (
       data.success
     ) {
 
 
-      showMessage(
+      /*
+       * Camera stop
+       */
 
-        "success",
-
-        "✅ Products Added Successfully",
-
-        `
-
-        <div class="row">
-          <span class="label">
-            Total Barcode:
-          </span>
-
-          ${data.count}
-        </div>
-
-        <div class="row">
-          <span class="label">
-            Quantity:
-          </span>
-
-          ${data.quantity}
-        </div>
-
-        <p>
-          ✅ Saare unique barcodes
-          Product List mein add ho gaye.
-        </p>
-
-        `
-
-      );
-
-
-      document
-        .getElementById("status")
-        .innerText =
-        "✅ " +
-        data.count +
-        " products saved successfully";
+      await stopScanner();
 
 
       /*
-       * Batch clear
+       * Form hide
        */
-
-      newBarcodes =
-        [];
-
-
-      updateBarcodeList();
-
-
-      /*
-       * Form clear
-       */
-
-      document
-        .getElementById(
-          "designCode"
-        )
-        .value =
-        "";
-
-
-      document
-        .getElementById(
-          "designName"
-        )
-        .value =
-        "";
-
-
-      document
-        .getElementById(
-          "size"
-        )
-        .value =
-        "";
-
-
-      document
-        .getElementById(
-          "color"
-        )
-        .value =
-        "";
-
-
-      document
-        .getElementById(
-          "type"
-        )
-        .value =
-        "";
-
-
-      document
-        .getElementById(
-          "mrp"
-        )
-        .value =
-        "";
-
 
       document
         .getElementById(
@@ -1405,33 +1450,41 @@ async function saveProduct() {
         "none";
 
 
+      /*
+       * Thank you screen
+       */
+
+      document
+        .getElementById(
+          "thankYou"
+        )
+        .style.display =
+        "block";
+
+
+      document
+        .getElementById(
+          "thankText"
+        )
+        .innerHTML =
+
+        "✅ " +
+
+        data.count +
+
+        " products successfully ENTRY ho gaye.<br><br>" +
+
+        "Aapka inventory record save ho gaya hai.";
+
     }
 
     else {
 
 
-      showMessage(
-
-        "error",
-
-        "❌ Save Failed",
-
-        `
-        <p>
-          ${escapeHtml(
-            data.message ||
-            "Products save nahi hue."
-          )}
-        </p>
-        `
-
+      alert(
+        data.message ||
+        "Entry save nahi hui."
       );
-
-
-      document
-        .getElementById("status")
-        .innerText =
-        "❌ Save failed";
 
     }
 
@@ -1444,25 +1497,9 @@ async function saveProduct() {
     console.error(error);
 
 
-    showMessage(
-
-      "error",
-
-      "⚠️ Connection Error",
-
-      `
-      <p>
-        Google Sheet se connection nahi ho paya.
-      </p>
-      `
-
+    alert(
+      "Google Sheet se connection nahi ho paya."
     );
-
-
-    document
-      .getElementById("status")
-      .innerText =
-      "⚠️ Connection error";
 
   }
 
@@ -1472,16 +1509,146 @@ async function saveProduct() {
 
 
   saveBtn.innerText =
-    "💾 Save All Products";
+    "💾 SAVE ENTRY";
 
 }
 
 
-/* ======================================================
-   SHOW MESSAGE
-   ====================================================== */
+/* =====================================================
+   NEW SCAN
+   ===================================================== */
 
-function showMessage(
+function newScan() {
+
+
+  /*
+   * Reset everything
+   */
+
+  newBarcodes =
+    [];
+
+
+  mode =
+    "";
+
+
+  lastBarcode =
+    "";
+
+
+  lastScanTime =
+    0;
+
+
+  checking =
+    false;
+
+
+  document
+    .getElementById(
+      "thankYou"
+    )
+    .style.display =
+    "none";
+
+
+  document
+    .getElementById(
+      "scannerArea"
+    )
+    .style.display =
+    "none";
+
+
+  document
+    .getElementById(
+      "productForm"
+    )
+    .style.display =
+    "none";
+
+
+  document
+    .getElementById(
+      "result"
+    )
+    .style.display =
+    "none";
+
+
+  document
+    .getElementById(
+      "modeSelection"
+    )
+    .style.display =
+    "block";
+
+
+  clearForm();
+
+
+  updateBarcodeList();
+
+}
+
+
+/* =====================================================
+   CLEAR FORM
+   ===================================================== */
+
+function clearForm() {
+
+
+  document
+    .getElementById(
+      "designCode"
+    )
+    .value = "";
+
+
+  document
+    .getElementById(
+      "designName"
+    )
+    .value = "";
+
+
+  document
+    .getElementById(
+      "size"
+    )
+    .value = "";
+
+
+  document
+    .getElementById(
+      "color"
+    )
+    .value = "";
+
+
+  document
+    .getElementById(
+      "type"
+    )
+    .value = "";
+
+
+  document
+    .getElementById(
+      "mrp"
+    )
+    .value = "";
+
+}
+
+
+/* =====================================================
+   SHOW RESULT
+   ===================================================== */
+
+function showResult(
   type,
   title,
   content
@@ -1504,17 +1671,21 @@ function showMessage(
 
 
   box.innerHTML =
+
     "<h3>" +
+
     title +
+
     "</h3>" +
+
     content;
 
 }
 
 
-/* ======================================================
-   STOP CAMERA
-   ====================================================== */
+/* =====================================================
+   STOP SCANNER
+   ===================================================== */
 
 async function stopScanner() {
 
@@ -1542,30 +1713,6 @@ async function stopScanner() {
       false;
 
 
-    document
-      .getElementById(
-        "startBtn"
-      )
-      .style.display =
-      "block";
-
-
-    document
-      .getElementById(
-        "stopBtn"
-      )
-      .style.display =
-      "none";
-
-
-    document
-      .getElementById(
-        "status"
-      )
-      .innerText =
-      "Camera stopped";
-
-
   }
 
   catch (error) {
@@ -1577,9 +1724,20 @@ async function stopScanner() {
 }
 
 
-/* ======================================================
+/* =====================================================
+   SCAN FAILURE
+   ===================================================== */
+
+function onScanFailure(error) {
+
+  // Normal scan failures ignore
+
+}
+
+
+/* =====================================================
    ESCAPE HTML
-   ====================================================== */
+   ===================================================== */
 
 function escapeHtml(value) {
 
@@ -1626,5 +1784,6 @@ function escapeHtml(value) {
 </script>
 
 </body>
+
 </html>
 ```

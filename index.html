@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Coat Pant Barcode Scanner</title>
+
+  <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f4f7fb;
+      color: #111827;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: auto;
+      padding: 20px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 18px;
+      padding: 20px;
+      box-shadow: 0 8px 30px rgba(0,0,0,.08);
+    }
+
+    h1 {
+      text-align: center;
+      margin-top: 0;
+      font-size: 26px;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #6b7280;
+      margin-bottom: 20px;
+    }
+
+    #reader {
+      width: 100%;
+      overflow: hidden;
+      border-radius: 15px;
+    }
+
+    button {
+      width: 100%;
+      border: none;
+      border-radius: 10px;
+      padding: 14px;
+      margin-top: 12px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    #startBtn {
+      background: #2563eb;
+      color: white;
+    }
+
+    #stopBtn {
+      background: #dc2626;
+      color: white;
+    }
+
+    .result {
+      margin-top: 20px;
+      padding: 18px;
+      border-radius: 14px;
+      background: #f8fafc;
+      display: none;
+    }
+
+    .success {
+      border-left: 5px solid #16a34a;
+    }
+
+    .error {
+      border-left: 5px solid #dc2626;
+    }
+
+    .row {
+      padding: 8px 0;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    .row:last-child {
+      border-bottom: none;
+    }
+
+    .label {
+      font-weight: bold;
+      color: #374151;
+    }
+
+    #status {
+      text-align: center;
+      margin-top: 15px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <div class="card">
+
+    <h1>📦 Coat Pant Scanner</h1>
+
+    <div class="subtitle">
+      Scan barcode to check product details
+    </div>
+
+    <div id="reader"></div>
+
+    <button id="startBtn" onclick="startScanner()">
+      📷 Start Camera
+    </button>
+
+    <button id="stopBtn" onclick="stopScanner()" style="display:none;">
+      ⛔ Stop Camera
+    </button>
+
+    <div id="status">
+      Camera start karne ke liye button dabayein
+    </div>
+
+    <div id="result" class="result"></div>
+
+  </div>
+
+</div>
+
+<script>
+
+const API_URL =
+"https://script.google.com/macros/s/AKfycbyXVElGwuC33nFSvaQU76AiaNrCuQofM9EQ0oawvpfReZu5g59SmOWWXztMC00ON8_hEQ/exec";
+
+let scanner = null;
+let scanning = false;
+let lastBarcode = "";
+let lastScanTime = 0;
+
+
+function startScanner() {
+
+  if (scanning) return;
+
+  scanner = new Html5Qrcode("reader");
+
+  const config = {
+    fps: 10,
+    qrbox: {
+      width: 280,
+      height: 140
+    }
+  };
+
+  scanner.start(
+    {
+      facingMode: "environment"
+    },
+    config,
+    onScanSuccess,
+    onScanFailure
+  )
+  .then(() => {
+
+    scanning = true;
+
+    document.getElementById("status").innerText =
+      "📷 Camera ready — barcode scan karein";
+
+    document.getElementById("startBtn").style.display = "none";
+    document.getElementById("stopBtn").style.display = "block";
+
+  })
+  .catch(error => {
+
+    console.error(error);
+
+    document.getElementById("status").innerText =
+      "❌ Camera start nahi ho paya. Camera permission check karein.";
+
+  });
+}
+
+
+function onScanSuccess(decodedText) {
+
+  const now = Date.now();
+
+  // Same barcode ko repeatedly scan hone se rokna
+  if (
+    decodedText === lastBarcode &&
+    now - lastScanTime < 3000
+  ) {
+    return;
+  }
+
+  lastBarcode = decodedText;
+  lastScanTime = now;
+
+  console.log("Barcode:", decodedText);
+
+  document.getElementById("status").innerText =
+    "🔍 Barcode mil gaya: " + decodedText;
+
+  getProduct(decodedText);
+}
+
+
+function onScanFailure(error) {
+  // Normal scanning errors ko ignore karna hai
+}
+
+
+async function getProduct(barcode) {
+
+  const resultBox = document.getElementById("result");
+
+  resultBox.style.display = "block";
+  resultBox.className = "result";
+
+  resultBox.innerHTML =
+    "<h3>⏳ Searching...</h3>" +
+    "<p>Google Sheet mein barcode check ho raha hai...</p>";
+
+  try {
+
+    const url =
+      API_URL +
+      "?barcode=" +
+      encodeURIComponent(barcode);
+
+    const response = await fetch(url);
+
+    const data = await response.json();
+
+    console.log(data);
+
+    if (data.success) {
+
+      resultBox.className =
+        "result success";
+
+      resultBox.innerHTML = `
+
+        <h3>✅ Product Found</h3>
+
+        <div class="row">
+          <span class="label">Barcode:</span>
+          ${escapeHtml(data.barcode)}
+        </div>
+
+        <div class="row">
+          <span class="label">Design Code:</span>
+          ${escapeHtml(data.designCode)}
+        </div>
+
+        <div class="row">
+          <span class="label">Design Name:</span>
+          ${escapeHtml(data.designName)}
+        </div>
+
+        <div class="row">
+          <span class="label">Size:</span>
+          ${escapeHtml(data.size)}
+        </div>
+
+        <div class="row">
+          <span class="label">Color:</span>
+          ${escapeHtml(data.color)}
+        </div>
+
+        <div class="row">
+          <span class="label">Type:</span>
+          ${escapeHtml(data.type)}
+        </div>
+
+        <div class="row">
+          <span class="label">MRP:</span>
+          ₹${escapeHtml(data.mrp)}
+        </div>
+
+      `;
+
+      document.getElementById("status").innerText =
+        "✅ Scan successful";
+
+    } else {
+
+      resultBox.className =
+        "result error";
+
+      resultBox.innerHTML = `
+
+        <h3>❌ Product Not Found</h3>
+
+        <div class="row">
+          <span class="label">Barcode:</span>
+          ${escapeHtml(barcode)}
+        </div>
+
+        <p>${escapeHtml(data.message || "Barcode database mein nahi mila")}</p>
+
+      `;
+
+      document.getElementById("status").innerText =
+        "❌ Barcode nahi mila";
+
+    }
+
+  } catch (error) {
+
+    console.error(error);
+
+    resultBox.className =
+      "result error";
+
+    resultBox.innerHTML = `
+
+      <h3>⚠️ Connection Error</h3>
+
+      <p>
+        Google Sheet se connection nahi ho paya.
+      </p>
+
+      <p>
+        Barcode: ${escapeHtml(barcode)}
+      </p>
+
+    `;
+
+    document.getElementById("status").innerText =
+      "⚠️ Connection error";
+
+  }
+}
+
+
+async function stopScanner() {
+
+  if (!scanner || !scanning) return;
+
+  try {
+
+    await scanner.stop();
+
+    scanner.clear();
+
+    scanning = false;
+
+    document.getElementById("startBtn").style.display = "block";
+    document.getElementById("stopBtn").style.display = "none";
+
+    document.getElementById("status").innerText =
+      "Camera stopped";
+
+  } catch (error) {
+
+    console.error(error);
+
+  }
+}
+
+
+function escapeHtml(value) {
+
+  if (value === null || value === undefined) {
+    return "";
+  }
+
+  return String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+
+}
+
+</script>
+
+</body>
+</html>

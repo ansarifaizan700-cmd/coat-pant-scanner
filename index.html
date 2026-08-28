@@ -1,7 +1,6 @@
 ```html
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
 
 <meta charset="UTF-8">
@@ -57,14 +56,14 @@ h1 {
 
 
 /* ================================
-   MODE SELECTION
+   MODE
 ================================ */
 
 .mode-title {
   text-align: center;
   font-size: 18px;
   font-weight: bold;
-  margin: 20px 0 10px;
+  margin: 20px 0 12px;
 }
 
 .mode-buttons {
@@ -74,9 +73,9 @@ h1 {
 
 .mode-btn {
   flex: 1;
-  padding: 18px 10px;
   border: none;
   border-radius: 12px;
+  padding: 18px 10px;
   font-size: 18px;
   font-weight: bold;
   cursor: pointer;
@@ -111,6 +110,17 @@ h1 {
 #stopBtn {
   background: #dc2626;
   color: white;
+}
+
+
+/* ================================
+   STATUS
+================================ */
+
+#status {
+  text-align: center;
+  margin-top: 15px;
+  font-weight: bold;
 }
 
 
@@ -154,12 +164,6 @@ h1 {
 .label {
   font-weight: bold;
   color: #374151;
-}
-
-#status {
-  text-align: center;
-  margin-top: 15px;
-  font-weight: bold;
 }
 
 
@@ -222,13 +226,12 @@ h1 {
 
   background: #f3f4f6;
   border-radius: 7px;
-
-  font-weight: bold;
 }
 
 .barcode-number {
   flex: 1;
   word-break: break-all;
+  font-weight: bold;
 }
 
 .remove-barcode-btn {
@@ -236,13 +239,30 @@ h1 {
   min-width: 42px;
   margin: 0 !important;
   padding: 8px !important;
-
   background: #dc2626 !important;
   color: white;
-
   border-radius: 8px !important;
+}
 
-  font-size: 16px !important;
+
+/* ================================
+   BUTTONS
+================================ */
+
+button {
+  width: 100%;
+  border: none;
+  border-radius: 10px;
+  padding: 14px;
+  margin-top: 12px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+button:disabled {
+  opacity: .6;
+  cursor: not-allowed;
 }
 
 #saveBtn {
@@ -281,27 +301,6 @@ h1 {
   color: white;
 }
 
-
-/* ================================
-   GENERAL BUTTON
-================================ */
-
-button {
-  width: 100%;
-  border: none;
-  border-radius: 10px;
-  padding: 14px;
-  margin-top: 12px;
-  font-size: 16px;
-  font-weight: bold;
-  cursor: pointer;
-}
-
-button:disabled {
-  opacity: .6;
-  cursor: not-allowed;
-}
-
 </style>
 
 </head>
@@ -309,16 +308,14 @@ button:disabled {
 
 <body>
 
-
 <div class="container">
 
 <div class="card">
 
-
 <h1>📦 Coat Pant Inventory</h1>
 
 <div class="subtitle">
-  Barcode Inventory Management
+Barcode Inventory Management
 </div>
 
 
@@ -329,7 +326,7 @@ button:disabled {
 <div id="modeSelection">
 
   <div class="mode-title">
-    Select Inventory Action
+    Select Action
   </div>
 
   <div class="mode-buttons">
@@ -388,17 +385,17 @@ button:disabled {
 
 
 <!-- =================================
-     PRODUCT FORM
+     ENTRY FORM
 ================================= -->
 
 <div id="productForm">
 
-  <h2>➕ New Product Entry</h2>
+  <h2>➕ Product Details</h2>
 
   <p>
     Same product ke multiple barcodes
-    scan kar sakte hain.
-    Details sirf <strong>ek baar</strong> bharein.
+    scan karein. Details sirf ek baar
+    bharni hain.
   </p>
 
 
@@ -512,7 +509,7 @@ button:disabled {
     id="thankText"
     class="thank-text">
 
-    Entry successfully completed.
+    Successfully completed.
 
   </div>
 
@@ -537,7 +534,7 @@ button:disabled {
 
 
 /* =================================
-   GOOGLE APPS SCRIPT API
+   GOOGLE APPS SCRIPT URL
 ================================= */
 
 const API_URL =
@@ -564,7 +561,7 @@ let newBarcodes = [];
 
 
 /* =================================
-   SELECT ENTRY / EXIT
+   SELECT MODE
 ================================= */
 
 function selectMode(selectedMode) {
@@ -579,12 +576,17 @@ function selectMode(selectedMode) {
     .getElementById("scannerArea")
     .style.display = "block";
 
+
   document
     .getElementById("status")
     .innerText =
+
       selectedMode === "ENTRY"
+
         ? "🟢 ENTRY Mode — Camera start ho raha hai..."
+
         : "🔴 EXIT Mode — Camera start ho raha hai...";
+
 
   startScanner();
 
@@ -592,15 +594,17 @@ function selectMode(selectedMode) {
 
 
 /* =================================
-   START CAMERA
+   START SCANNER
 ================================= */
 
 function startScanner() {
 
   if (scanning) return;
 
+
   scanner =
     new Html5Qrcode("reader");
+
 
   const config = {
 
@@ -628,27 +632,30 @@ function startScanner() {
 
   )
 
-  .then(() => {
+  .then(function() {
 
     scanning = true;
 
     document
       .getElementById("status")
       .innerText =
+
         mode === "ENTRY"
+
           ? "🟢 ENTRY — Barcode scan karein"
+
           : "🔴 EXIT — Barcode scan karein";
 
   })
 
-  .catch(error => {
+  .catch(function(error) {
 
     console.error(error);
 
     document
       .getElementById("status")
       .innerText =
-        "❌ Camera start nahi ho paya. Camera permission check karein.";
+        "❌ Camera start nahi ho paya. Permission check karein.";
 
   });
 
@@ -664,6 +671,7 @@ function onScanSuccess(decodedText) {
   const barcode =
     String(decodedText).trim();
 
+
   if (!barcode) return;
 
 
@@ -673,47 +681,16 @@ function onScanSuccess(decodedText) {
 
   /*
    * Same barcode ko camera ke
-   * continuous scanning se protect karein
+   * continuous scanning se rokna
    */
 
   if (
+
     barcode === lastBarcode &&
+
     now - lastScanTime < 2500
+
   ) {
-
-    /*
-     * ENTRY mein duplicate message
-     */
-
-    if (
-      mode === "ENTRY" &&
-      newBarcodes.includes(barcode)
-    ) {
-
-      showResult(
-
-        "warning",
-
-        "⚠️ Duplicate Barcode",
-
-        `<p>
-          Barcode
-          <strong>${escapeHtml(barcode)}</strong>
-          already scan ho chuka hai.
-        </p>
-
-        <p>
-          Ye barcode dobara add nahi hoga.
-        </p>`
-
-      );
-
-      document
-        .getElementById("status")
-        .innerText =
-          "⚠️ Duplicate barcode — add nahi hua";
-
-    }
 
     return;
 
@@ -731,12 +708,16 @@ function onScanSuccess(decodedText) {
 
 
   /*
-   * ENTRY batch mein already scanned barcode
+   * ENTRY:
+   * Current batch mein duplicate
    */
 
   if (
+
     mode === "ENTRY" &&
+
     newBarcodes.includes(barcode)
+
   ) {
 
     showResult(
@@ -747,15 +728,24 @@ function onScanSuccess(decodedText) {
 
       `<p>
         Barcode
-        <strong>${escapeHtml(barcode)}</strong>
-        already current list mein hai.
+        <strong>
+          ${escapeHtml(barcode)}
+        </strong>
+        already scan ho chuka hai.
       </p>
 
       <p>
-        Duplicate barcode add nahi hua.
+        Ye barcode dobara add nahi hoga.
       </p>`
 
     );
+
+
+    document
+      .getElementById("status")
+      .innerText =
+        "⚠️ Duplicate barcode — add nahi hua";
+
 
     return;
 
@@ -777,7 +767,7 @@ function onScanSuccess(decodedText) {
 
 
 /* =================================
-   CHECK BARCODE FROM GOOGLE SHEET
+   CHECK BARCODE
 ================================= */
 
 async function checkBarcode(barcode) {
@@ -810,7 +800,7 @@ async function checkBarcode(barcode) {
 
 
     /* =================================
-       ENTRY - NEW BARCODE
+       ENTRY - NEW
     ================================= */
 
     if (
@@ -822,14 +812,12 @@ async function checkBarcode(barcode) {
     ) {
 
 
-      /*
-       * New barcode list mein add
-       */
-
       if (
+
         !newBarcodes.includes(
           data.barcode
         )
+
       ) {
 
         newBarcodes.push(
@@ -841,10 +829,6 @@ async function checkBarcode(barcode) {
 
       updateBarcodeList();
 
-
-      /*
-       * Form open
-       */
 
       document
         .getElementById("productForm")
@@ -859,11 +843,11 @@ async function checkBarcode(barcode) {
         "🆕 New Barcode",
 
         `<p>
-          Barcode successfully add ho gaya.
+          Barcode list mein add ho gaya.
         </p>
 
         <p>
-          Aap aur barcode scan kar sakte hain.
+          Ab aur barcode scan kar sakte hain.
         </p>`
 
       );
@@ -872,7 +856,7 @@ async function checkBarcode(barcode) {
       document
         .getElementById("status")
         .innerText =
-          "🟢 Aur barcode scan karein ya form submit karein";
+          "🟢 Aur barcode scan karein ya SAVE ENTRY karein";
 
 
       return;
@@ -899,9 +883,7 @@ async function checkBarcode(barcode) {
 
         "⚠️ Already Registered",
 
-        `
-
-        <div class="row">
+        `<div class="row">
 
           <span class="label">
             Barcode:
@@ -912,15 +894,13 @@ async function checkBarcode(barcode) {
         </div>
 
         <p>
-          Ye barcode Product List mein
+          Ye barcode Products sheet mein
           already registered hai.
         </p>
 
         <p>
           Dobara ENTRY nahi hogi.
-        </p>
-
-        `
+        </p>`
 
       );
 
@@ -931,7 +911,7 @@ async function checkBarcode(barcode) {
 
 
     /* =================================
-       EXIT SUCCESS
+       EXIT - PRODUCT FOUND
     ================================= */
 
     if (
@@ -943,64 +923,12 @@ async function checkBarcode(barcode) {
     ) {
 
 
-      showResult(
+      /*
+       * Ab actual EXIT process
+       */
 
-        "success",
-
-        "✅ EXIT Successful",
-
-        `
-
-        <div class="row">
-
-          <span class="label">
-            Barcode:
-          </span>
-
-          ${escapeHtml(data.barcode)}
-
-        </div>
-
-
-        <div class="row">
-
-          <span class="label">
-            Design:
-          </span>
-
-          ${escapeHtml(data.designName)}
-
-        </div>
-
-
-        <div class="row">
-
-          <span class="label">
-            Size:
-          </span>
-
-          ${escapeHtml(data.size)}
-
-        </div>
-
-
-        <div class="row">
-
-          <span class="label">
-            Color:
-          </span>
-
-          ${escapeHtml(data.color)}
-
-        </div>
-
-
-        <p>
-          📦 Product successfully OUT ho gaya.
-        </p>
-
-        `
-
+      await processExit(
+        barcode
       );
 
 
@@ -1010,7 +938,7 @@ async function checkBarcode(barcode) {
 
 
     /* =================================
-       EXIT NOT FOUND
+       EXIT - NOT FOUND
     ================================= */
 
     if (
@@ -1029,41 +957,18 @@ async function checkBarcode(barcode) {
         "❌ Product Not Found",
 
         `<p>
-          ${escapeHtml(data.message)}
+          ${escapeHtml(
+            data.message
+          )}
         </p>`
 
       );
 
 
-      return;
-
-    }
-
-
-    /* =================================
-       EXIT ALREADY OUT
-    ================================= */
-
-    if (
-
-      mode === "EXIT" &&
-
-      data.status === "ALREADY_OUT"
-
-    ) {
-
-
-      showResult(
-
-        "warning",
-
-        "⚠️ Already OUT",
-
-        `<p>
-          ${escapeHtml(data.message)}
-        </p>`
-
-      );
+      document
+        .getElementById("status")
+        .innerText =
+          "❌ Product Products sheet mein nahi mila";
 
 
       return;
@@ -1106,12 +1011,158 @@ async function checkBarcode(barcode) {
 
       `<p>
         Google Sheet se connection nahi ho paya.
+      </p>
+
+      <p>
+        Internet connection check karein.
       </p>`
 
     );
 
   }
 
+  finally {
+
+    checking = false;
+
+  }
+
+}
+
+
+/* =================================
+   ACTUAL EXIT PROCESS
+================================= */
+
+async function processExit(barcode) {
+
+  try {
+
+
+    document
+      .getElementById("status")
+      .innerText =
+        "⏳ Product EXIT ho raha hai...";
+
+
+    const url =
+
+      API_URL +
+
+      "?action=processExit" +
+
+      "&barcode=" +
+
+      encodeURIComponent(barcode);
+
+
+    const response =
+      await fetch(url);
+
+
+    const data =
+      await response.json();
+
+
+    console.log(data);
+
+
+    if (
+      data.success &&
+      data.status === "EXIT_SUCCESS"
+    ) {
+
+
+      /*
+       * Camera stop
+       */
+
+      await stopScanner();
+
+
+      /*
+       * Thank You screen
+       */
+
+      document
+        .getElementById("result")
+        .style.display =
+          "none";
+
+
+      document
+        .getElementById("thankYou")
+        .style.display =
+          "block";
+
+
+      document
+        .getElementById("thankText")
+        .innerHTML =
+
+          "🔴 Product successfully OUT ho gaya.<br><br>" +
+
+          "<strong>Barcode:</strong> " +
+
+          escapeHtml(
+            data.barcode
+          ) +
+
+          "<br><br>" +
+
+          "<strong>Design:</strong> " +
+
+          escapeHtml(
+            data.designName
+          );
+
+    }
+
+    else {
+
+
+      showResult(
+
+        "warning",
+
+        "⚠️ EXIT nahi hua",
+
+        `<p>
+          ${escapeHtml(
+            data.message ||
+            "Product exit nahi ho paya."
+          )}
+        </p>`
+
+      );
+
+    }
+
+
+  }
+
+  catch (error) {
+
+    console.error(error);
+
+
+    showResult(
+
+      "error",
+
+      "⚠️ Connection Error",
+
+      `<p>
+        Product EXIT nahi ho paya.
+      </p>
+
+      <p>
+        Google Sheet connection check karein.
+      </p>`
+
+    );
+
+  }
 
   finally {
 
@@ -1158,26 +1209,22 @@ function updateBarcodeList() {
         "barcode-item";
 
 
-      const barcodeText =
+      const text =
         document.createElement(
           "span"
         );
 
 
-      barcodeText.className =
+      text.className =
         "barcode-number";
 
 
-      barcodeText.innerText =
+      text.innerText =
 
         (index + 1) +
         ". " +
         barcode;
 
-
-      /*
-       * REMOVE BUTTON
-       */
 
       const removeBtn =
         document.createElement(
@@ -1209,19 +1256,11 @@ function updateBarcodeList() {
         };
 
 
-      div.appendChild(
-        barcodeText
-      );
+      div.appendChild(text);
 
+      div.appendChild(removeBtn);
 
-      div.appendChild(
-        removeBtn
-      );
-
-
-      list.appendChild(
-        div
-      );
+      list.appendChild(div);
 
     }
   );
@@ -1253,36 +1292,21 @@ function removeBarcode(index) {
     newBarcodes[index];
 
 
-  /*
-   * List se barcode remove
-   */
-
   newBarcodes.splice(
     index,
     1
   );
 
 
-  /*
-   * List refresh
-   */
-
   updateBarcodeList();
 
-
-  /*
-   * Agar koi barcode nahi bacha
-   * to form hide
-   */
 
   if (
     newBarcodes.length === 0
   ) {
 
     document
-      .getElementById(
-        "productForm"
-      )
+      .getElementById("productForm")
       .style.display =
         "none";
 
@@ -1298,13 +1322,15 @@ function removeBarcode(index) {
     `<p>
       Barcode
       <strong>
-        ${escapeHtml(removedBarcode)}
+        ${escapeHtml(
+          removedBarcode
+        )}
       </strong>
       list se remove kar diya gaya.
     </p>
 
     <p>
-      Agar chahein to ise dobara scan kar sakte hain.
+      Ise chahein to dobara scan kar sakte hain.
     </p>`
 
   );
@@ -1385,10 +1411,6 @@ async function saveEntry() {
       )
       .value.trim();
 
-
-  /*
-   * Required fields
-   */
 
   if (!designCode) {
 
@@ -1543,20 +1565,17 @@ async function saveEntry() {
 
 
     if (
-      data.success
+
+      data.success &&
+
+      data.status ===
+      "ENTRY_SUCCESS"
+
     ) {
 
 
-      /*
-       * Camera stop
-       */
-
       await stopScanner();
 
-
-      /*
-       * Form hide
-       */
 
       document
         .getElementById(
@@ -1566,10 +1585,6 @@ async function saveEntry() {
           "none";
 
 
-      /*
-       * Result hide
-       */
-
       document
         .getElementById(
           "result"
@@ -1577,10 +1592,6 @@ async function saveEntry() {
         .style.display =
           "none";
 
-
-      /*
-       * Thank You screen
-       */
 
       document
         .getElementById(
@@ -1596,13 +1607,15 @@ async function saveEntry() {
         )
         .innerHTML =
 
-          "✅ " +
+          "🟢 Entry successfully completed.<br><br>" +
+
+          "<strong>" +
 
           data.count +
 
-          " products successfully ENTRY ho gaye.<br><br>" +
+          "</strong> products Products sheet mein add ho gaye.<br><br>" +
 
-          "Inventory record successfully save ho gaya.";
+          "Scan Log mein ENTRY nahi hui.";
 
     }
 
@@ -1651,10 +1664,6 @@ async function saveEntry() {
 function newScan() {
 
 
-  /*
-   * Reset
-   */
-
   newBarcodes = [];
 
   mode = "";
@@ -1666,10 +1675,6 @@ function newScan() {
   checking = false;
 
 
-  /*
-   * Hide Thank You
-   */
-
   document
     .getElementById(
       "thankYou"
@@ -1677,10 +1682,6 @@ function newScan() {
     .style.display =
       "none";
 
-
-  /*
-   * Hide Scanner
-   */
 
   document
     .getElementById(
@@ -1690,10 +1691,6 @@ function newScan() {
       "none";
 
 
-  /*
-   * Hide Form
-   */
-
   document
     .getElementById(
       "productForm"
@@ -1701,10 +1698,6 @@ function newScan() {
     .style.display =
       "none";
 
-
-  /*
-   * Hide Result
-   */
 
   document
     .getElementById(
@@ -1714,10 +1707,6 @@ function newScan() {
       "none";
 
 
-  /*
-   * Show Mode Selection
-   */
-
   document
     .getElementById(
       "modeSelection"
@@ -1726,16 +1715,7 @@ function newScan() {
       "block";
 
 
-  /*
-   * Clear Form
-   */
-
   clearForm();
-
-
-  /*
-   * Clear barcode list
-   */
 
   updateBarcodeList();
 
@@ -1822,9 +1802,7 @@ function showResult(
   box.innerHTML =
 
     "<h3>" +
-
     title +
-
     "</h3>" +
 
     content;
@@ -1851,16 +1829,11 @@ async function stopScanner() {
 
   try {
 
-
     await scanner.stop();
-
 
     scanner.clear();
 
-
-    scanning =
-      false;
-
+    scanning = false;
 
   }
 
@@ -1880,8 +1853,7 @@ async function stopScanner() {
 function onScanFailure(error) {
 
   /*
-   * Normal scanner failures
-   * ignore karna hai
+   * Normal scanning errors ignore
    */
 
 }
@@ -1939,6 +1911,5 @@ function escapeHtml(value) {
 </script>
 
 </body>
-
 </html>
 ```
